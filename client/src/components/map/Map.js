@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import MapComponent from './MapComponent';
 import SearchScreen from '../search/SearchScreen';
 import './Map.css';
 
-const Map = ({ selectedMode, isSearchOpen, setIsSearchOpen }) => {
-  const [selectedDestination, setSelectedDestination] = useState(null);
-
+const Map = ({ selectedMode, isSearchOpen, setIsSearchOpen, onNavigate }) => {
   const handleNavigate = (destination) => {
-    setSelectedDestination(destination);
+    onNavigate(destination);
   };
 
   const filterButtons = {
@@ -103,9 +101,7 @@ const Map = ({ selectedMode, isSearchOpen, setIsSearchOpen }) => {
 
           {/* 지도 컴포넌트 */}
           <div className="map-component-container">
-            <MapComponent 
-              selectedDestination={selectedDestination}
-            />
+            <MapComponent />
           </div>
         </>
       )}

@@ -1,60 +1,79 @@
-/* global naver */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import SearchScreen from './SearchScreen';
 import MapService from '../map/MapService';
+import RouteService from '../map/RouteService';
+import RouteInfoPanel from '../map/s_bt';
 import './RouteSelectionScreen.css';
 
 const RouteSelectionScreen = ({ destination, onBack }) => {
   const [isSearchingStart, setIsSearchingStart] = useState(false);
+  const [isSearchingDestination, setIsSearchingDestination] = useState(false);
   const [startLocation, setStartLocation] = useState(null);
+  const [routeType, setRouteType] = useState('normal');
+  const [routeInfo, setRouteInfo] = useState(null);
   const mapRef = useRef(null);
   const mapServiceRef = useRef(null);
+  const routeServiceRef = useRef(null);
+
+  // drawRoute를 useCallback으로 감싸서 메모이제이션
+  const drawRoute = useCallback(async () => {
+    if (!routeServiceRef.current) return;
+    
+    try {
+      const result = await routeServiceRef.current.drawRoute(
+        startLocation?.coords,
+        destination?.coords,
+        routeType
+      );
+      setRouteInfo(result);
+    } catch (error) {
+      console.error('경로 그리기 실패:', error);
+      setRouteInfo({ error: '경로를 찾을 수 없습니다.' });
+    }
+  }, [startLocation, destination, routeType]);
 
   // 출발지와 도착지가 모두 있을 때만 지도 초기화
   useEffect(() => {
     if (mapRef.current && startLocation && destination) {
       mapServiceRef.current = new MapService(mapRef.current);
+      routeServiceRef.current = new RouteService(mapServiceRef.current.getMapInstance());
       
-      // 출발지 마커
-      mapServiceRef.current.createMarker({
-        position: new naver.maps.LatLng(
-          startLocation.coords.latitude,
-          startLocation.coords.longitude
-        ),
-        icon: {
-          content: '<div class="start-marker">📍</div>',
-          anchor: new naver.maps.Point(15, 31)
-        }
-      });
-
-      // 도착지 마커
-      mapServiceRef.current.createMarker({
-        position: new naver.maps.LatLng(
-          destination.coords.latitude,
-          destination.coords.longitude
-        ),
-        icon: {
-          content: '<div class="destination-marker">🏁</div>',
-          anchor: new naver.maps.Point(15, 31)
-        }
-      });
-
-      // 두 지점이 모두 보이도록 지도 범위 조정
-      mapServiceRef.current.fitBounds([
-        [startLocation.coords.longitude, startLocation.coords.latitude],
-        [destination.coords.longitude, destination.coords.latitude]
-      ]);
+      drawRoute();
     }
-  }, [startLocation, destination]);
+  }, [startLocation, destination, routeType, drawRoute]);
+
+  // 거리 포맷팅
+  const formatDistance = (meters) => {
+    if (meters < 1000) return `${meters}m`;
+    return `${(meters / 1000).toFixed(1)}km`;
+  };
+
+  // 시간 포맷팅
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}분`;
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    return `${hours}시간 ${remainingMinutes}분`;
+  };
 
   const handleStartLocationClick = () => {
     setIsSearchingStart(true);
+  };
+
+  const handleDestinationClick = () => {
+    setIsSearchingDestination(true);
   };
 
   const handleStartLocationSelect = (location) => {
     setStartLocation(location);
     setIsSearchingStart(false);
   };
+
+  if (isSearchingDestination) {
+    onBack();
+    return null;
+  }
 
   if (isSearchingStart) {
     return (
@@ -88,7 +107,10 @@ const RouteSelectionScreen = ({ destination, onBack }) => {
               readOnly
             />
           </div>
-          <div className="input-row">
+          <div 
+            className="input-row clickable"
+            onClick={handleDestinationClick}
+          >
             <span className="location-icon">⬇️</span>
             <input 
               type="text" 
@@ -101,19 +123,32 @@ const RouteSelectionScreen = ({ destination, onBack }) => {
       </div>
       
       <div className="transport-tabs">
-        <button className="transport-tab">
-          <span className="tab-icon">🚌</span>
-          <span className="tab-text">버스</span>
-        </button>
-        <button className="transport-tab active">
+        <button 
+          className={`transport-tab ${routeType === 'normal' ? 'active' : ''}`}
+          onClick={() => setRouteType('normal')}
+        >
           <span className="tab-icon">🚶</span>
-          <span className="tab-text">도보</span>
+          <span className="tab-text">일반</span>
+        </button>
+        <button 
+          className={`transport-tab ${routeType === 'safe' ? 'active' : ''}`}
+          onClick={() => setRouteType('safe')}
+        >
+          <span className="tab-icon">🛡️</span>
+          <span className="tab-text">안전</span>
         </button>
       </div>
 
-      {/* 출발지와 도착지가 모두 있을 때만 지도 표시 */}
       {startLocation && destination && (
-        <div className="map-container" ref={mapRef}></div>
+        <>
+          <div className="map-container" ref={mapRef}></div>
+          <RouteInfoPanel
+            routeInfo={routeInfo}
+            routeType={routeType}
+            formatDistance={formatDistance}
+            formatTime={formatTime}
+          />
+        </>
       )}
     </div>
   );

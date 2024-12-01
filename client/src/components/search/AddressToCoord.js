@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-// 주소를 좌표로 변환하는 컴포넌트
-// 카카오/구글 Places API를 활용한 주소 검색 및 좌표 변환 기능
-
 const AddressToCoords = ({ setStartCoords, setGoalCoords }) => {
   const [startAddress, setStartAddress] = useState("");
   const [goalAddress, setGoalAddress] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [searchResult, setSearchResult] = useState("");
+  const [isFirstSearch, setIsFirstSearch] = useState(true);
 
   // 카표 형식 통일화 함수
   const formatCoords = (latitude, longitude) => {
@@ -76,9 +74,9 @@ const AddressToCoords = ({ setStartCoords, setGoalCoords }) => {
             place.geometry.location.lng()
           );
           setStartCoords(coords);
-          setSearchResult(prev => 
+          /*setSearchResult(prev => 
             `${prev}\n출발지: ${place.formatted_address} (${coords.latitude}, ${coords.longitude})`
-          );
+          );*/
           setErrorMessage("");
         }
       });
@@ -94,9 +92,9 @@ const AddressToCoords = ({ setStartCoords, setGoalCoords }) => {
             place.geometry.location.lng()
           );
           setGoalCoords(coords);
-          setSearchResult(prev => 
+          /*setSearchResult(prev => 
             `${prev}\n도착지: ${place.formatted_address} (${coords.latitude}, ${coords.longitude})`
-          );
+          );*/
           setErrorMessage("");
         }
       });
@@ -107,6 +105,7 @@ const AddressToCoords = ({ setStartCoords, setGoalCoords }) => {
   const handleSearch = () => {
     setErrorMessage("");
     setSearchResult("");
+    setIsFirstSearch(false);
 
     if (!startAddress || !goalAddress) {
       setErrorMessage("출발지와 도착지 모두 입력하세요.");
@@ -118,15 +117,16 @@ const AddressToCoords = ({ setStartCoords, setGoalCoords }) => {
   };
 
   return (
-    <div className="address-search-container">
-      <h3>주소 입력</h3>
-      <div className="input-container">
+    <div className="search-container">
+      <div className="search-box">
         <input
           id="start-address-input"
           type="text"
           placeholder="출발지 입력"
           value={startAddress}
           onChange={(e) => setStartAddress(e.target.value)}
+          className="search-input"
+          disabled={!isFirstSearch}
         />
         <input
           id="goal-address-input"
@@ -134,11 +134,13 @@ const AddressToCoords = ({ setStartCoords, setGoalCoords }) => {
           placeholder="도착지 입력"
           value={goalAddress}
           onChange={(e) => setGoalAddress(e.target.value)}
+          className="search-input"
         />
-        <button onClick={handleSearch}>검색</button>
+        <button onClick={handleSearch} className="search-button">
+          검색
+        </button>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
       </div>
-      {errorMessage && <p className="error-message" style={{ color: "red" }}>{errorMessage}</p>}
-      <pre className="search-result" style={{ whiteSpace: "pre-line" }}>{searchResult}</pre>
     </div>
   );
 };

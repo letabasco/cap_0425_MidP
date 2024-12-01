@@ -1,10 +1,6 @@
 /* global naver */
 
-// 네이버 지도 관련 기능을 캡슐화한 서비스 클래스
-// 지도 초기화, 마커 생성, 현재 위치 표시 등의 기능 제공
-
 class MapService {
-    // 지도 인스턴스 초기화
     constructor(mapElement) {
       this.mapInstance = new naver.maps.Map(mapElement, {
         center: new naver.maps.LatLng(35.8714354, 128.601445),
@@ -17,7 +13,6 @@ class MapService {
       return this.mapInstance;
     }
   
-    // 현재 위치를 지도에 표시하고 마커 생성
     setCurrentLocation(coords) {
       const currentPosition = new naver.maps.LatLng(
         coords.latitude,
@@ -53,7 +48,6 @@ class MapService {
       });
     }
   
-    // 새로운 마커 생성
     createMarker(position, options) {
       return new naver.maps.Marker({
         position: new naver.maps.LatLng(position.latitude, position.longitude),
