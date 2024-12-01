@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MapComponent from './MapComponent';
 import SearchScreen from '../search/SearchScreen';
 import './Map.css';
 
 const Map = ({ selectedMode, isSearchOpen, setIsSearchOpen }) => {
+  const [selectedDestination, setSelectedDestination] = useState(null);
+
+  const handleNavigate = (destination) => {
+    setSelectedDestination(destination);
+  };
+
   const filterButtons = {
     '일반': [
       { icon: '🏗️', text: '공사현장' },
@@ -37,14 +43,20 @@ const Map = ({ selectedMode, isSearchOpen, setIsSearchOpen }) => {
   return (
     <div className="map-container">
       {isSearchOpen ? (
-        <SearchScreen onClose={() => setIsSearchOpen(false)} />
+        <SearchScreen 
+          onClose={() => setIsSearchOpen(false)} 
+          onNavigate={handleNavigate}
+        />
       ) : (
         <>
           {/* 헤더 */}
           <div className="header">
             <div className="logo">
-              <span className="logo-icon">🗺️</span>
-              <span className="logo-text">map spicy</span>
+              <img 
+                src="/images/search_bar/mapspicy.png" 
+                alt="map spicy" 
+                className="logo-image"
+              />
             </div>
             <button className="menu-button">≡</button>
           </div>
@@ -54,14 +66,27 @@ const Map = ({ selectedMode, isSearchOpen, setIsSearchOpen }) => {
             className="search-bar"
             onClick={() => setIsSearchOpen(true)}
           >
-            <span className="search-icon">🔍</span>
+            <img 
+              src="/images/search_bar/search.svg" 
+              alt="검색" 
+              className="search-icon"
+            />
             <input 
               type="text" 
               placeholder="장소, 주소 검색" 
               className="search-input" 
               readOnly
             />
-            <span className="voice-icon">🎤</span>
+            <img 
+              src="/images/search_bar/mike.svg" 
+              alt="음성 검색" 
+              className="voice-icon"
+            />
+            <img 
+              src="/images/search_bar/menu.svg" 
+              alt="메뉴" 
+              className="menu-icon"
+            />
           </div>
           
           {/* 필터 버튼 */}
@@ -78,7 +103,9 @@ const Map = ({ selectedMode, isSearchOpen, setIsSearchOpen }) => {
 
           {/* 지도 컴포넌트 */}
           <div className="map-component-container">
-            <MapComponent />
+            <MapComponent 
+              selectedDestination={selectedDestination}
+            />
           </div>
         </>
       )}

@@ -28,13 +28,10 @@
   gap: 8px;
 }
 
-.logo-icon {
-  font-size: 24px;
-}
-
-.logo-text {
-  font-size: 18px;
-  font-weight: 500;
+.logo-image {
+  height: 30px;  /* 원하는 크기로 조절 */
+  width: auto;
+  object-fit: contain;
 }
 
 .menu-button {
@@ -47,28 +44,39 @@
 /* 검색바 스타일 */
 .search-bar {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 10px;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 500px;
   z-index: 2;
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
-  padding: 0 12px;
+  padding: 12px 16px;
+  height: 48px;
 }
 
 .search-icon {
-  font-size: 20px;
-  color: #666;
-  margin-right: 8px;
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
 }
 
 .voice-icon {
-  font-size: 20px;
-  color: #666;
-  margin-left: auto;
+  width: 24px;
+  height: 24px;
+  margin-left: 12px;
+  cursor: pointer;
+}
+
+.menu-icon {
+  width: 24px;
+  height: 24px;
+  margin-left: 12px;
+  cursor: pointer;
 }
 
 .search-input {
