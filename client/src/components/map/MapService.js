@@ -1,118 +1,119 @@
 /* global naver */
 
 class MapService {
-    constructor(mapElement) {
-      // naver maps 객체 확인
-      if (!window.naver || !window.naver.maps) {
-        throw new Error('Naver Maps API is not loaded');
-      }
+  constructor(mapElement, initialPosition = null) {
+    this.mapInstance = new naver.maps.Map(mapElement, {
+      center: initialPosition 
+        ? new naver.maps.LatLng(initialPosition.latitude, initialPosition.longitude)
+        : new naver.maps.LatLng(35.8714354, 128.601445),
+      zoom: 14,
+    });
+    this.currentLocationMarker = null;
+  }
 
-      // 기본 옵션 설정
-      const defaultOptions = {
-        center: new naver.maps.LatLng(35.8714354, 128.601445),
-        zoom: 14,
-        mapDataControl: false,
-        scaleControl: false,
-        logoControl: false,
-        zoomControl: false,
-        mapTypeControl: false,
-        disableKineticPan: false,
-        tileTransition: true,
-        minZoom: 6,
-        maxZoom: 21,
-        scrollWheel: true,
-        draggable: true,
-        pinchZoom: true,
-        keyboardShortcuts: true,
-      };
+  getMapInstance() {
+    return this.mapInstance;
+  }
 
-      try {
-        // 지도 인스턴스 생성
-        this.mapInstance = new naver.maps.Map(mapElement, defaultOptions);
-        
-        // 지도 인스턴스 초기화 확인
-        if (!this.mapInstance) {
-          throw new Error('Failed to initialize map instance');
-        }
+  setCurrentLocation(coords) {
+    const currentPosition = new naver.maps.LatLng(
+      coords.latitude,
+      coords.longitude
+    );
 
-        this.currentLocationMarker = null;
+    this.mapInstance.setCenter(currentPosition);
 
-        // 기본 이벤트 바인딩
-        this._bindMapEvents();
-
-      } catch (error) {
-        console.error('Map initialization error:', error);
-        throw error;
-      }
+    if (this.currentLocationMarker) {
+      this.currentLocationMarker.setMap(null);
     }
 
-    // 기본 이벤트 바인딩
-    _bindMapEvents() {
-      if (!this.mapInstance) return;
+    this.currentLocationMarker = new naver.maps.Marker({
+      position: currentPosition,
+      map: this.mapInstance,
+      icon: {
+        content: `
+          <div style="position: relative;">
+            <div style="width: 20px; height: 20px; background: #4A90E2; border: 3px solid white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+              <div style="width: 6px; height: 6px; background: white; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+            </div>
+          </div>`,
+        anchor: new naver.maps.Point(10, 10)
+      },
+      zIndex: 100
+    });
 
-      // 지도 로드 완료 이벤트
-      naver.maps.Event.once(this.mapInstance, 'init', () => {
-        console.log('Map initialization completed');
+    naver.maps.Event.addListener(this.currentLocationMarker, 'click', () => {
+      const infoWindow = new naver.maps.InfoWindow({
+        content: '<div style="padding: 10px; text-align: center;">현재 위치</div>'
       });
+      infoWindow.open(this.mapInstance, this.currentLocationMarker);
+    });
+  }
 
-      // 에러 처리
-      naver.maps.Event.addListener(this.mapInstance, 'error', (error) => {
-        console.error('Map error:', error);
+  createMarker(position, options) {
+    return new naver.maps.Marker({
+      position: new naver.maps.LatLng(position.latitude, position.longitude),
+      map: this.mapInstance,
+      ...options
+    });
+  }
+
+  createPolyline(path, options) {
+    return new naver.maps.Polyline({
+      path,
+      map: this.mapInstance,
+      ...options
+    });
+  }
+
+  fitBounds(coordinates) {
+    const bounds = coordinates.reduce(
+      (bounds, coord) => bounds.extend(new naver.maps.LatLng(coord[1], coord[0])),
+      new naver.maps.LatLngBounds()
+    );
+    
+    this.mapInstance.fitBounds(bounds, {
+      top: 50,
+      right: 50,
+      bottom: 50,
+      left: 50
+    });
+  }
+
+  panToLocation(coords) {
+    if (this.mapInstance) {
+      const position = new window.naver.maps.LatLng(coords.latitude, coords.longitude);
+      this.mapInstance.panTo(position);
+    }
+  }
+
+  updateCurrentLocation(coords) {
+    const currentPosition = new naver.maps.LatLng(
+      coords.latitude,
+      coords.longitude
+    );
+
+    this.mapInstance.setCenter(currentPosition);
+
+    if (this.currentLocationMarker) {
+      this.currentLocationMarker.setPosition(currentPosition);
+    } else {
+      this.currentLocationMarker = new naver.maps.Marker({
+        position: currentPosition,
+        map: this.mapInstance,
+        icon: {
+          content: `
+            <div style="position: relative;">
+              <div style="width: 20px; height: 20px; background: #4A90E2; border: 3px solid white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                <div style="width: 6px; height: 6px; background: white; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+              </div>
+            </div>`,
+          anchor: new naver.maps.Point(10, 10)
+        },
+        zIndex: 100
       });
     }
-
-    // 지도 인스턴스 getter
-    getMapInstance() {
-      if (!this.mapInstance) {
-        throw new Error('Map instance is not initialized');
-      }
-      return this.mapInstance;
-    }
-
-    // 현재 위치 설정
-    setCurrentLocation(position) {
-      if (!this.mapInstance) return;
-
-      const { latitude, longitude } = position;
-      const location = new naver.maps.LatLng(latitude, longitude);
-
-      if (this.currentLocationMarker) {
-        this.currentLocationMarker.setPosition(location);
-      } else {
-        this.currentLocationMarker = new naver.maps.Marker({
-          position: location,
-          map: this.mapInstance
-        });
-      }
-
-      this.mapInstance.setCenter(location);
-    }
-
-    // 지도 이동
-    moveToPosition(position, zoom) {
-      if (!this.mapInstance) return;
-
-      try {
-        const moveLatLng = new naver.maps.LatLng(position.lat, position.lng);
-        this.mapInstance.setCenter(moveLatLng);
-        if (zoom) {
-          this.mapInstance.setZoom(zoom);
-        }
-      } catch (error) {
-        console.error('Error moving map:', error);
-      }
-    }
-
-    // 줌 레벨 설정
-    setZoom(level) {
-      if (!this.mapInstance) return;
-
-      try {
-        this.mapInstance.setZoom(level);
-      } catch (error) {
-        console.error('Error setting zoom:', error);
-      }
-    }
+  }
 }
 
 export default MapService;

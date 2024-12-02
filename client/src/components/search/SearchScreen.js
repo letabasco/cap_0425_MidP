@@ -184,7 +184,12 @@ const SearchScreen = ({ onClose, onNavigate, isStartLocation = false }) => {
   };
 
   const handleBack = () => {
-    setSelectedDestination(null);
+    if (selectedDestination) {
+      setSelectedDestination(null);
+    } else {
+      setSearchText('');
+      onClose();
+    }
   };
 
   if (selectedDestination) {
@@ -200,7 +205,7 @@ const SearchScreen = ({ onClose, onNavigate, isStartLocation = false }) => {
   return (
     <div className="search-screen">
       <div className="search-header">
-        <button className="back-button" onClick={onClose}>
+        <button className="back-button" onClick={handleBack}>
           ←
         </button>
         <div className="search-input-container">
