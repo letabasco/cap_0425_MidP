@@ -1,9 +1,23 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import SearchScreen from './SearchScreen';
 import MapService from '../map/MapService';
 import RouteService from '../map/RouteService';
 import RouteInfoPanel from '../map/s_bt';
 import './RouteSelectionScreen.css';
+
+// 메모이제이션된 MapComponent 사용
+const MemoizedMapComponent = React.memo(({ mapRef }) => (
+  <div 
+    ref={mapRef} 
+    className="map-container"
+    style={{ 
+      willChange: 'transform',
+      transform: 'translateZ(0)',
+      backfaceVisibility: 'hidden',
+      touchAction: 'pan-x pan-y'
+    }}
+  />
+));
 
 const RouteSelectionScreen = ({ destination, onBack }) => {
   const [isSearchingStart, setIsSearchingStart] = useState(false);
@@ -32,15 +46,43 @@ const RouteSelectionScreen = ({ destination, onBack }) => {
     }
   }, [startLocation, destination, routeType]);
 
-  // 출발지와 도착지가 모두 있을 때만 지도 초기화
-  useEffect(() => {
-    if (mapRef.current && startLocation && destination) {
+  // 지도 초기화 로직 분리
+  const initializeMap = useCallback(() => {
+    if (!mapRef.current || !startLocation || !destination) return;
+    
+    if (!mapServiceRef.current) {
       mapServiceRef.current = new MapService(mapRef.current);
       routeServiceRef.current = new RouteService(mapServiceRef.current.getMapInstance());
-      
-      drawRoute();
     }
-  }, [startLocation, destination, routeType, drawRoute]);
+    
+    drawRoute();
+  }, [startLocation, destination, drawRoute]);
+
+  // 지도 초기화 useEffect 최적화
+  useEffect(() => {
+    initializeMap();
+    
+    return () => {
+      if (mapServiceRef.current) {
+        const mapInstance = mapServiceRef.current.getMapInstance();
+        if (mapInstance) {
+          mapInstance.destroy();
+        }
+        mapServiceRef.current = null;
+        routeServiceRef.current = null;
+      }
+    };
+  }, [initializeMap]);
+
+  // RouteInfoPanel 메모이제이션
+  const MemoizedRouteInfoPanel = useMemo(() => (
+    <RouteInfoPanel
+      routeInfo={routeInfo}
+      routeType={routeType}
+      formatDistance={formatDistance}
+      formatTime={formatTime}
+    />
+  ), [routeInfo, routeType]);
 
   // 거리 포맷팅
   const formatDistance = (meters) => {
@@ -141,17 +183,12 @@ const RouteSelectionScreen = ({ destination, onBack }) => {
 
       {startLocation && destination && (
         <>
-          <div className="map-container" ref={mapRef}></div>
-          <RouteInfoPanel
-            routeInfo={routeInfo}
-            routeType={routeType}
-            formatDistance={formatDistance}
-            formatTime={formatTime}
-          />
+          <MemoizedMapComponent mapRef={mapRef} />
+          {MemoizedRouteInfoPanel}
         </>
       )}
     </div>
   );
 };
 
-export default RouteSelectionScreen;
+export default React.memo(RouteSelectionScreen);
