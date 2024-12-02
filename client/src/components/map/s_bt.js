@@ -10,6 +10,7 @@ const RouteInfoPanel = ({
 }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const panelRef = useRef(null);
+  const panelClassName = `route-info-panel ${routeType === 'safe' ? 'safe-mode' : ''}`;
 
   // 패널 클릭 시 토글
   const handlePanelClick = () => {
