@@ -22,31 +22,31 @@ const Map = ({ selectedMode, isSearchOpen, setIsSearchOpen, onNavigate }) => {
 
   const filterButtons = {
     '일반': [
-      { icon: '🏗️', text: '공사현장' },
-      { icon: '🏪', text: '편의점' },
-      { icon: '🚒', text: '소방시설' },
-      { icon: '👮', text: '경찰서' },
-      { icon: '⚠️', text: '범죄주의구간' },
+      { icon: '/images/icon/normal/gong4.png', text: '공사현장' },
+      { icon: '/images/icon/normal/store.png', text: '편의점' },
+      { icon: '/images/icon/normal/oneonenine.png', text: '소방시설' },
+      { icon: '/images/icon/normal/police.png', text: '경찰서' },
+      { icon: '/images/icon/normal/warning.png', text: '범죄주의구간' },
     ],
     '여성': [
-      { icon: '🚨', text: '안전비상벨' },
-      { icon: '📹', text: 'CCTV' },
-      { icon: '⚠️', text: '범죄주의구간' },
-      { icon: '🏪', text: '편의점' },
-      { icon: '🚒', text: '소방시설' },
-      { icon: '👮', text: '경찰서' },
-      { icon: '🏗️', text: '공사현장' },
+      { icon: '/images/icon/wemen/siren.png', text: '안전비상벨' },
+      { icon: '/images/icon/wemen/cctv.png', text: 'CCTV' },
+      { icon: '/images/icon/wemen/warning.png', text: '범죄주의구간' },
+      { icon: '/images/icon/wemen/store.png', text: '편의점' },
+      { icon: '/images/icon/wemen/oneonenine.png', text: '소방시설' },
+      { icon: '/images/icon/wemen/police.png', text: '경찰서' },
+      { icon: '/images/icon/wemen/gong4.png', text: '공사현장' },
     ],
     '노약자': [
-      { icon: '🚇', text: '지하철역 엘레베이터' },
-      { icon: '💊', text: '심야약국' },
-      { icon: '🔌', text: '휠체어 충전소' },
-      { icon: '🏥', text: '복지시설' },
-      { icon: '⚠️', text: '범죄주의구간' },
-      { icon: '🏪', text: '편의점' },
-      { icon: '🚒', text: '소방시설' },
-      { icon: '👮', text: '경찰서' },
-      { icon: '🏗️', text: '공사현장' },
+      { icon: '/images/icon/old/ele.svg', text: '지하철역 엘레베이터' },
+      { icon: '/images/icon/old/drugstore.svg', text: '심야약국' },
+      { icon: '/images/icon/old/charge.png', text: '휠체어 충전소' },
+      { icon: '/images/icon/old/noin.png', text: '복지시설' },
+      { icon: '/images/icon/old/warning.png', text: '범죄주의구간' },
+      { icon: '/images/icon/old/store.png', text: '편의점' },
+      { icon: '/images/icon/old/oneonenine.png', text: '소방시설' },
+      { icon: '/images/icon/old/police.png', text: '경찰서' },
+      { icon: '/images/icon/old/gong4.png', text: '공사현장' },
     ],
   };
 
@@ -183,7 +183,16 @@ const Map = ({ selectedMode, isSearchOpen, setIsSearchOpen, onNavigate }) => {
                     className={`filter-button ${activeFilters.includes(button.text) ? 'active' : ''}`}
                     onClick={() => handleFilterClick(button.text)}
                   >
-                    <span className="filter-button-icon">{button.icon}</span>
+                    <img 
+                      src={button.icon} 
+                      alt={button.text}
+                      className="filter-button-icon"
+                      style={{
+                        width: '24px',
+                        height: '24px',
+                        objectFit: 'contain'
+                      }}
+                    />
                     <span className="filter-button-text">{button.text}</span>
                   </button>
                 ))}
