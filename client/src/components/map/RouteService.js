@@ -1,5 +1,4 @@
 /* global naver */
-
 class RouteService {
   constructor(mapInstance) {
     this.mapInstance = mapInstance;
@@ -171,12 +170,10 @@ class RouteService {
         position: new naver.maps.LatLng(cctv.latitude, cctv.longitude),
         map: this.mapInstance,
         icon: {
-          content: `
-            <div style="position: relative;">
-              <div style="width: 24px; height: 24px; background: #FFD700; border: 2px solid white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3); display: flex; justify-content: center; align-items: center;">
-                <div style="font-size: 10px; color: #000; font-weight: bold;">${cctv.cameraCount || 1}</div>
-              </div>
-            </div>`,
+          url: '/images/map/direction/CCTV.svg',
+          size: new naver.maps.Size(24, 24),
+          scaledSize: new naver.maps.Size(24, 24),
+          origin: new naver.maps.Point(0, 0),
           anchor: new naver.maps.Point(12, 12)
         }
       });
@@ -222,12 +219,10 @@ class RouteService {
         position: new naver.maps.LatLng(store.latitude, store.longitude),
         map: this.mapInstance,
         icon: {
-          content: `
-            <div style="position: relative;">
-              <div style="width: 24px; height: 24px; background: #00BFFF; border: 2px solid white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3); display: flex; justify-content: center; align-items: center;">
-                <div style="font-size: 12px; color: white;">편</div>
-              </div>
-            </div>`,
+          url: '/images/map/direction/store.svg',
+          size: new naver.maps.Size(24, 24),
+          scaledSize: new naver.maps.Size(24, 24),
+          origin: new naver.maps.Point(0, 0),
           anchor: new naver.maps.Point(12, 12)
         }
       });

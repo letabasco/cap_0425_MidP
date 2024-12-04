@@ -116,7 +116,11 @@ const CustomSettingsPanel = ({ onModeChange, selectedMode }) => {
               onClick={() => handleModeSelect('일반')}
             >
               <div className="icon-circle">
-                <span className="icon">👤</span>
+                <img 
+                  src="/images/panel/human-male-yellow.svg" 
+                  alt="일반"
+                  className="mode-icon"
+                />
               </div>
               <span>일반</span>
             </button>
@@ -126,7 +130,11 @@ const CustomSettingsPanel = ({ onModeChange, selectedMode }) => {
               onClick={() => handleModeSelect('여성')}
             >
               <div className="icon-circle">
-                <span className="icon">👩</span>
+                <img 
+                  src="/images/panel/human-female-yellow.svg" 
+                  alt="여성"
+                  className="mode-icon"
+                />
               </div>
               <span>여성</span>
             </button>
@@ -136,7 +144,11 @@ const CustomSettingsPanel = ({ onModeChange, selectedMode }) => {
               onClick={() => handleModeSelect('노약자')}
             >
               <div className="icon-circle">
-                <span className="icon">♿</span>
+                <img 
+                  src="/images/panel/human-wheelchair-yellow.svg" 
+                  alt="노약자"
+                  className="mode-icon"
+                />
               </div>
               <span>노약자</span>
             </button>

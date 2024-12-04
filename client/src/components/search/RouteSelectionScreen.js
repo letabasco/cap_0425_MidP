@@ -198,14 +198,22 @@ const RouteSelectionScreen = ({ destination, onBack, onNavigate }) => {
           className={`transport-tab ${routeType === 'normal' ? 'active' : ''}`}
           onClick={() => setRouteType('normal')}
         >
-          <span className="tab-icon">🚶</span>
+          <img 
+            src="/images/RouteSelectionScreen/normal.svg" 
+            alt="일반 경로"
+            className="tab-icon"
+          />
           <span className="tab-text">일반</span>
         </button>
         <button 
           className={`transport-tab ${routeType === 'safe' ? 'active' : ''}`}
           onClick={() => setRouteType('safe')}
         >
-          <span className="tab-icon">🛡️</span>
+          <img 
+            src="/images/RouteSelectionScreen/safe.svg" 
+            alt="안전 경로"
+            className="tab-icon"
+          />
           <span className="tab-text">안전</span>
         </button>
       </div>

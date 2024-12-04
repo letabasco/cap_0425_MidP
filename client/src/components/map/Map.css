@@ -44,7 +44,7 @@
 /* 검색바 스타일 */
 .search-bar {
   position: fixed;
-  top: 65px;
+  top: 0px;
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% - 32px);
@@ -95,7 +95,7 @@
 /* 필터 버튼 스타일 */
 .filter-buttons-container {
   position: fixed;
-  top: 115px;
+  top: 40px;
   left: 0;
   right: 0;
   z-index: 1001;
@@ -186,7 +186,7 @@
   }
 
   .search-bar {
-    top: 55px;
+    top: 10px;
     width: calc(100% - 24px);
     margin: 0 12px;
     height: 40px;
@@ -205,7 +205,7 @@
   }
 
   .filter-buttons-container {
-    top: 105px;
+    top: 70px;
     padding: 0 12px;
   }
 
@@ -218,14 +218,14 @@
 /* 작은 모바일 화면 대응 */
 @media (max-width: 380px) {
   .search-bar {
-    top: 50px;
+    top: 10px;
     width: calc(100% - 16px);
     margin: 0 8px;
     height: 38px;
   }
 
   .filter-buttons-container {
-    top: 100px;
+    top: 90px;
     padding: 0 8px;
   }
 }
@@ -245,7 +245,7 @@
 /* 반응형 디자인 */
 @media (max-width: 768px) {
   .search-bar {
-    top: 55px;
+    top: 10px;
     width: calc(100% - 24px);
     margin: 0 12px;
     height: 40px;
@@ -255,7 +255,7 @@
 
 @media (max-width: 480px) {
   .search-bar {
-    top: 50px;
+    top: 10px;
     width: calc(100% - 16px);
     margin: 0 8px;
     height: 38px;
@@ -264,7 +264,7 @@
 
 @media (max-width: 380px) {
   .search-bar {
-    top: 45px;
+    top: 10px;
     width: calc(100% - 12px);
     margin: 0 6px;
     height: 36px;
