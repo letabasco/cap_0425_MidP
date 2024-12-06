@@ -5,103 +5,46 @@ import './CustomSettingsPanel.css';
 // 사용자 설정 패널 컴포넌트
 // 드래그 가능한 바텀 시트 형태의 설정 패널 제공
 
-const CustomSettingsPanel = ({ onModeChange, selectedMode }) => {
+const CustomSettingsPanel = ({ onModeChange, selectedMode = '일반' }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-  const [dragStart, setDragStart] = useState(null);
-  const [dragOffset, setDragOffset] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
   const panelRef = useRef(null);
-  const lastY = useRef(0);
 
-  const handleModeSelect = useCallback((mode) => {
-    onModeChange(mode);
-    setIsPanelOpen(false);
-    setDragOffset(0);
-  }, [onModeChange]);
+  // 패널 클릭 시 토글
+  const handlePanelClick = () => {
+    setIsPanelOpen(!isPanelOpen);
+  };
 
-  // 패널 드래그 시작 처리
-  const handleStart = useCallback((clientY) => {
-    setIsDragging(true);
-    lastY.current = clientY;
-    setDragStart({
-      y: clientY,
-      offset: dragOffset
-    });
-  }, [dragOffset]);
+  // 터치 이벤트 처리
+  const handleTouchStart = (e) => {
+    const touch = e.touches[0];
+    const startY = touch.clientY;
 
-  // 패널 드래그 중 처리
-  const handleMove = useCallback((clientY) => {
-    if (!isDragging || !dragStart) return;
-    
-    const diff = dragStart.y - clientY;
-    const newOffset = Math.max(0, Math.min(diff, 150));
-    setDragOffset(newOffset);
-  }, [dragStart, isDragging]);
+    const handleTouchMove = (e) => {
+      const currentY = e.touches[0].clientY;
+      const deltaY = startY - currentY;
 
-  const handleEnd = useCallback(() => {
-    if (!isDragging) return;
+      if (deltaY > 50) { // 위로 스와이프
+        setIsPanelOpen(true);
+      } else if (deltaY < -50) { // 아래로 스와이프
+        setIsPanelOpen(false);
+      }
+    };
 
-    if (dragOffset > 50) {
-      setIsPanelOpen(true);
-      setDragOffset(150);
-    } else {
-      setIsPanelOpen(false);
-      setDragOffset(0);
-    }
+    const handleTouchEnd = () => {
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
 
-    setIsDragging(false);
-    setDragStart(null);
-  }, [dragOffset, isDragging]);
-
-  const handleTouchStart = useCallback((e) => {
-    handleStart(e.touches[0].clientY);
-  }, [handleStart]);
-
-  const handleTouchMove = useCallback((e) => {
-    handleMove(e.touches[0].clientY);
-  }, [handleMove]);
-
-  const handleTouchEnd = useCallback(() => {
-    handleEnd();
-  }, [handleEnd]);
-
-  const handleMouseDown = useCallback((e) => {
-    if (e.target.closest('.drag-handle')) {
-      handleStart(e.clientY);
-    }
-  }, [handleStart]);
-
-  const handleMouseMove = useCallback((e) => {
-    if (isDragging) {
-      handleMove(e.clientY);
-    }
-  }, [isDragging, handleMove]);
-
-  const handleMouseUp = useCallback(() => {
-    handleEnd();
-  }, [handleEnd]);
-
-  const getPanelStyle = () => {
-    if (isDragging) {
-      return {
-        transform: `translateY(${Math.max(0, Math.min(100 - (dragOffset / 150) * 100, 100))}%)`
-      };
-    }
-    return {};
+    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('touchend', handleTouchEnd);
   };
 
   return (
     <div 
-      className={`settings-panel ${isPanelOpen ? 'open' : ''} ${isDragging ? 'dragging' : ''}`}
-      style={getPanelStyle()}
+      className={`settings-panel ${isPanelOpen ? 'open' : ''}`}
       ref={panelRef}
+      onClick={handlePanelClick}
       onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
     >
       <div className="panel-header">
         <div className="drag-handle" />
@@ -113,7 +56,7 @@ const CustomSettingsPanel = ({ onModeChange, selectedMode }) => {
             <button 
               type="button"
               className={`user-type-button ${selectedMode === '일반' ? 'active' : ''}`}
-              onClick={() => handleModeSelect('일반')}
+              onClick={() => onModeChange('일반')}
             >
               <div className="icon-circle">
                 <img 
@@ -127,7 +70,7 @@ const CustomSettingsPanel = ({ onModeChange, selectedMode }) => {
             <button 
               type="button"
               className={`user-type-button ${selectedMode === '여성' ? 'active' : ''}`}
-              onClick={() => handleModeSelect('여성')}
+              onClick={() => onModeChange('여성')}
             >
               <div className="icon-circle">
                 <img 
@@ -141,7 +84,7 @@ const CustomSettingsPanel = ({ onModeChange, selectedMode }) => {
             <button 
               type="button"
               className={`user-type-button ${selectedMode === '노약자' ? 'active' : ''}`}
-              onClick={() => handleModeSelect('노약자')}
+              onClick={() => onModeChange('노약자')}
             >
               <div className="icon-circle">
                 <img 
@@ -162,10 +105,6 @@ const CustomSettingsPanel = ({ onModeChange, selectedMode }) => {
 CustomSettingsPanel.propTypes = {
   onModeChange: PropTypes.func.isRequired,
   selectedMode: PropTypes.string
-};
-
-CustomSettingsPanel.defaultProps = {
-  selectedMode: '일반'
 };
 
 export default CustomSettingsPanel;

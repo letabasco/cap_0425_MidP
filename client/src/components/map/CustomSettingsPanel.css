@@ -11,6 +11,8 @@
   will-change: transform;
   transform: translateY(calc(100% - 63px));
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .settings-panel.open {
@@ -29,6 +31,8 @@
   align-items: center;
   background: transparent;
   cursor: grab;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .panel-header:active {

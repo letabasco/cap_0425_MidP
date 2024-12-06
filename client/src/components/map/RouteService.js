@@ -7,6 +7,8 @@ class RouteService {
     this.pathInstance = null;
     this.storeMarkers = [];
     this.currentInfoWindow = null;
+    this.startMarker = null;
+    this.endMarker = null;
   }
 
   clearMap() {
@@ -24,75 +26,77 @@ class RouteService {
     if (this.currentInfoWindow) {
       this.currentInfoWindow.close();
     }
+    this.startMarker = null;
+    this.endMarker = null;
+  }
+
+  calculateMarkerSize = () => {
+    const zoom = this.mapInstance.getZoom();
+    const baseSize = 48;
+    const scale = Math.max(0.5, Math.min(2, zoom / 12));
+    return Math.round(baseSize * scale);
+  };
+
+  updateMarkers = () => {
+    const newSize = this.calculateMarkerSize();
+    const newHalf = newSize / 2;
+
+    if (this.startMarker) {
+      this.startMarker.setIcon({
+        url: 'images/map/start.svg',
+        size: new naver.maps.Size(newSize, newSize),
+        scaledSize: new naver.maps.Size(newSize, newSize),
+        origin: new naver.maps.Point(0, 0),
+        anchor: new naver.maps.Point(newHalf, newHalf)
+      });
+    }
+
+    if (this.endMarker) {
+      this.endMarker.setIcon({
+        url: 'images/map/goal.svg',
+        size: new naver.maps.Size(newSize, newSize),
+        scaledSize: new naver.maps.Size(newSize, newSize),
+        origin: new naver.maps.Point(0, 0),
+        anchor: new naver.maps.Point(newHalf, newHalf)
+      });
+    }
   }
 
   async drawRoute(startCoords, goalCoords, routeType) {
     try {
       this.clearMap();
 
-      // 마커 크기 계산 함수
-      const calculateMarkerSize = () => {
-        const zoom = this.mapInstance.getZoom();
-        const baseSize = 48; // 기본 크기
-        const scale = Math.max(0.5, Math.min(2, zoom / 12)); // 줌 레벨 12를 기준으로 0.5~2 사이의 스케일 계산
-        return Math.round(baseSize * scale);
-      };
+      const initialSize = this.calculateMarkerSize();
+      const initialHalf = initialSize / 2;
 
-      // 마커 업데이트 함수
-      const updateMarkers = () => {
-        const size = calculateMarkerSize();
-        const half = size / 2;
-      
-        startMarker.setIcon({
-          url: 'images/map/start.svg', // 경로 수정
-          size: new naver.maps.Size(size, size),
-          scaledSize: new naver.maps.Size(size, size),
-          origin: new naver.maps.Point(0, 0),
-          anchor: new naver.maps.Point(half, half),
-        });
-      
-        endMarker.setIcon({
-          url: 'images/map/goal.svg', // 경로 수정
-          size: new naver.maps.Size(size, size),
-          scaledSize: new naver.maps.Size(size, size),
-          origin: new naver.maps.Point(0, 0),
-          anchor: new naver.maps.Point(half, half),
-        });
-      };
-      
-
-      // 출발지 마커 생성
-      const startMarker = new naver.maps.Marker({
+      this.startMarker = new naver.maps.Marker({
         position: new naver.maps.LatLng(startCoords.latitude, startCoords.longitude),
         map: this.mapInstance,
         icon: {
           url: 'images/map/start.svg',
-          size: new naver.maps.Size(48, 48),
-          scaledSize: new naver.maps.Size(48, 48),
+          size: new naver.maps.Size(initialSize, initialSize),
+          scaledSize: new naver.maps.Size(initialSize, initialSize),
           origin: new naver.maps.Point(0, 0),
-          anchor: new naver.maps.Point(24, 24)
+          anchor: new naver.maps.Point(initialHalf, initialHalf)
         }
       });
 
-      // 도착지 마커 생성
-      const endMarker = new naver.maps.Marker({
+      this.endMarker = new naver.maps.Marker({
         position: new naver.maps.LatLng(goalCoords.latitude, goalCoords.longitude),
         map: this.mapInstance,
         icon: {
           url: 'images/map/goal.svg',
-          size: new naver.maps.Size(48, 48),
-          scaledSize: new naver.maps.Size(48, 48),
+          size: new naver.maps.Size(initialSize, initialSize),
+          scaledSize: new naver.maps.Size(initialSize, initialSize),
           origin: new naver.maps.Point(0, 0),
-          anchor: new naver.maps.Point(24, 24)
+          anchor: new naver.maps.Point(initialHalf, initialHalf)
         }
       });
 
-      // 줌 변경 이벤트 리스너 추가
-      naver.maps.Event.addListener(this.mapInstance, 'zoom_changed', updateMarkers);
+      naver.maps.Event.addListener(this.mapInstance, 'zoom_changed', this.updateMarkers);
 
-      this.markers.push(startMarker, endMarker);
+      this.markers.push(this.startMarker, this.endMarker);
 
-      // 경로 API 호출
       const apiEndpoint = routeType === 'safe' ? 'safe-direction' : 'normal-direction';
       const startStr = `${startCoords.latitude},${startCoords.longitude}`;
       const goalStr = `${goalCoords.latitude},${goalCoords.longitude}`;
@@ -120,7 +124,6 @@ class RouteService {
           }
         });
 
-        // 경로 그리기
         this.pathInstance = new naver.maps.Polyline({
           map: this.mapInstance,
           path: pathCoordinates.map(coord => new naver.maps.LatLng(coord[1], coord[0])),
@@ -128,7 +131,6 @@ class RouteService {
           strokeWeight: 5
         });
 
-        // 경로가 보이도록 지도 범위 조정
         const bounds = new naver.maps.LatLngBounds();
         pathCoordinates.forEach(coord => {
           bounds.extend(new naver.maps.LatLng(coord[1], coord[0]));
@@ -136,11 +138,7 @@ class RouteService {
         
         this.mapInstance.fitBounds(bounds);
 
-        // 안전 경로일 경우 CCTV와 편의점 표시
         if (routeType === 'safe') {
-          //console.log('CCTV 데이터:', result.data.nearbyCCTVs);
-          //console.log('편의점 데이터:', result.data.nearbyStores);
-
           if (result.data.nearbyCCTVs && result.data.nearbyCCTVs.length > 0) {
             this.displayCCTVMarkers(result.data.nearbyCCTVs);
           }
@@ -149,10 +147,9 @@ class RouteService {
           }
         }
 
-        // 경로 정보 포맷팅
         return {
-          distance: result.data.features[0].properties.totalDistance || 0,  // 미터 단위
-          time: result.data.features[0].properties.totalTime || 0,         // 초 단위
+          distance: result.data.features[0].properties.totalDistance || 0,
+          time: result.data.features[0].properties.totalTime || 0,
           safety: result.data.safety,
           cctvCount: result.data.nearbyCCTVs?.length || 0,
           storeCount: result.data.nearbyStores?.length || 0
@@ -171,8 +168,8 @@ class RouteService {
         map: this.mapInstance,
         icon: {
           url: '/images/map/direction/CCTV.svg',
-          size: new naver.maps.Size(24, 24),
-          scaledSize: new naver.maps.Size(24, 24),
+          size: new naver.maps.Size(48, 48),
+          scaledSize: new naver.maps.Size(48, 48),
           origin: new naver.maps.Point(0, 0),
           anchor: new naver.maps.Point(12, 12)
         }
@@ -220,8 +217,8 @@ class RouteService {
         map: this.mapInstance,
         icon: {
           url: '/images/map/direction/store.svg',
-          size: new naver.maps.Size(24, 24),
-          scaledSize: new naver.maps.Size(24, 24),
+          size: new naver.maps.Size(48, 48),
+          scaledSize: new naver.maps.Size(48, 48),
           origin: new naver.maps.Point(0, 0),
           anchor: new naver.maps.Point(12, 12)
         }
@@ -231,7 +228,7 @@ class RouteService {
         content: `
           <div style="padding: 10px; min-width: 200px;">
             <h4 style="margin: 0 0 5px 0;">${store.name || '편의점'}</h4>
-            <p style="margin: 5px 0;">${store.address || '주소 정보 없음'}</p>
+            <p style="margin: 5px 0;">${store.address || '주소 정보 없'}</p>
             <p style="margin: 5px 0; color: #666;">거리: ${store.distance || '정보 없음'}</p>
           </div>
         `,

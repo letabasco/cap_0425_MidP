@@ -5,10 +5,44 @@ class MapService {
     this.mapInstance = new naver.maps.Map(mapElement, {
       center: initialPosition 
         ? new naver.maps.LatLng(initialPosition.latitude, initialPosition.longitude)
-        : new naver.maps.LatLng(35.8714354, 128.601445),
+        : new naver.maps.LatLng(37.5666805, 126.9784147),
       zoom: 14,
+      zoomControl: true,
+      zoomControlOptions: {
+        position: naver.maps.Position.TOP_RIGHT,
+        style: naver.maps.ZoomControlStyle.SMALL
+      },
+      smoothZoom: true,
+      zoomDuration: 200,
+      transition: true,
+      transitionDuration: 1000,
     });
     this.currentLocationMarker = null;
+
+    naver.maps.Event.addListener(this.mapInstance, 'zoom_changed', () => {
+      const zoomLevel = this.mapInstance.getZoom();
+      console.log('Current zoom level:', zoomLevel);
+    });
+
+    if (!initialPosition && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const coords = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          };
+          this.setCurrentLocation(coords);
+        },
+        (error) => {
+          console.error('Error getting current position:', error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
+        }
+      );
+    }
   }
 
   getMapInstance() {
@@ -76,14 +110,19 @@ class MapService {
       top: 50,
       right: 50,
       bottom: 50,
-      left: 50
+      left: 50,
+      duration: 500,
+      easing: 'easeOutCubic'
     });
   }
 
   panToLocation(coords) {
     if (this.mapInstance) {
-      const position = new window.naver.maps.LatLng(coords.latitude, coords.longitude);
-      this.mapInstance.panTo(position);
+      const position = new naver.maps.LatLng(coords.latitude, coords.longitude);
+      this.mapInstance.panTo(position, {
+        duration: 500,
+        easing: 'easeInOutCubic'
+      });
     }
   }
 
@@ -112,6 +151,16 @@ class MapService {
         },
         zIndex: 100
       });
+    }
+  }
+
+  setZoom(level, useAnimation = true) {
+    if (this.mapInstance) {
+      if (useAnimation) {
+        this.mapInstance.setZoom(level, true);
+      } else {
+        this.mapInstance.setZoom(level, false);
+      }
     }
   }
 }

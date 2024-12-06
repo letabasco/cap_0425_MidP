@@ -11,12 +11,12 @@ const Map = ({ selectedMode, isSearchOpen, setIsSearchOpen, onNavigate }) => {
   };
 
   const handleFilterClick = (filterText) => {
+    console.log('Filter clicked:', filterText);
     setActiveFilters(prev => {
-      if (prev.includes(filterText)) {
-        return prev.filter(f => f !== filterText);
-      } else {
-        return [...prev, filterText];
-      }
+      const newFilters = prev.includes(filterText)
+        ? prev.filter(f => f !== filterText)
+        : [...prev, filterText];
+      return newFilters;
     });
   };
 
@@ -124,7 +124,7 @@ const Map = ({ selectedMode, isSearchOpen, setIsSearchOpen, onNavigate }) => {
                 ≡
               </button>
 
-              {/* 검색 입력창 */}
+              {/* 검색 력창 */}
               <div 
                 onClick={() => setIsSearchOpen(true)}
                 style={{
@@ -202,7 +202,12 @@ const Map = ({ selectedMode, isSearchOpen, setIsSearchOpen, onNavigate }) => {
 
           {/* 지도 컴포넌트 */}
           <div className="map-component-container">
-            <MapComponent />
+            <MapComponent 
+              selectedMode={selectedMode} 
+              activeFilters={activeFilters} 
+              setActiveFilters={setActiveFilters}
+              onFilterClick={handleFilterClick}
+            />
           </div>
         </>
       )}
