@@ -1,12 +1,11 @@
+// SearchScreen.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './SearchScreen.css';
-import RouteSelectionScreen from './RouteSelectionScreen';
 
 const SearchScreen = ({ onClose, onNavigate, isStartLocation = false }) => {
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const [selectedDestination, setSelectedDestination] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // 카카오 장소 검색 API 호출 (키워드 + 주소)
@@ -44,8 +43,8 @@ const SearchScreen = ({ onClose, onNavigate, isStartLocation = false }) => {
         name: place.place_name,
         address: place.road_address_name || place.address_name,
         coords: {
-          latitude: place.y,
-          longitude: place.x
+          latitude: parseFloat(place.y),
+          longitude: parseFloat(place.x)
         }
       }));
 
@@ -55,8 +54,8 @@ const SearchScreen = ({ onClose, onNavigate, isStartLocation = false }) => {
         name: place.address_name,
         address: place.road_address?.address_name || place.address_name,
         coords: {
-          latitude: place.y,
-          longitude: place.x
+          latitude: parseFloat(place.y),
+          longitude: parseFloat(place.x)
         }
       }));
 
@@ -73,145 +72,29 @@ const SearchScreen = ({ onClose, onNavigate, isStartLocation = false }) => {
     }
   };
 
-  // Google Places Autocomplete 설정
-  useEffect(() => {
-    if (window.google && window.google.maps && window.google.maps.places) {
-      const searchInput = document.getElementById('search-input');
-      const autocomplete = new window.google.maps.places.Autocomplete(searchInput, {
-        types: ['establishment', 'geocode'],
-        componentRestrictions: { country: 'kr' }
-      });
-
-      autocomplete.addListener('place_changed', () => {
-        const place = autocomplete.getPlace();
-        if (place.geometry) {
-          const placeData = {
-            id: place.place_id,
-            name: place.name || place.formatted_address,
-            address: place.formatted_address,
-            coords: {
-              latitude: place.geometry.location.lat(),
-              longitude: place.geometry.location.lng()
-            },
-            source: 'google' // 구글 결과임을 표시
-          };
-          
-          // 기존 검색 결과와 통합
-          setSearchResults(prevResults => {
-            const newResults = [...prevResults];
-            // 중복 제거를 위해 같은 place_id를 가진 결과 제거
-            const existingIndex = newResults.findIndex(r => r.id === place.place_id);
-            if (existingIndex !== -1) {
-              newResults.splice(existingIndex, 1);
-            }
-            // 구글 결과를 맨 위에 추가
-            return [placeData, ...newResults];
-          });
-        }
-      });
-
-      // 예측 결과 변경 이벤트 리스너 추가
-      const getPredictions = (input) => {
-        const service = new window.google.maps.places.AutocompleteService();
-        service.getPlacePredictions({
-          input,
-          componentRestrictions: { country: 'kr' }
-        }, (predictions, status) => {
-          if (status === window.google.maps.places.PlacesServiceStatus.OK && predictions) {
-            const placesService = new window.google.maps.places.PlacesService(document.createElement('div'));
-            
-            // 각 예측 결과에 대해 상세 정보 가져오기
-            predictions.forEach(prediction => {
-              placesService.getDetails({
-                placeId: prediction.place_id,
-                fields: ['name', 'formatted_address', 'geometry']
-              }, (place, detailStatus) => {
-                if (detailStatus === window.google.maps.places.PlacesServiceStatus.OK) {
-                  const placeData = {
-                    id: place.place_id,
-                    name: place.name || prediction.structured_formatting.main_text,
-                    address: place.formatted_address,
-                    coords: {
-                      latitude: place.geometry.location.lat(),
-                      longitude: place.geometry.location.lng()
-                    },
-                    source: 'google'
-                  };
-
-                  setSearchResults(prevResults => {
-                    const newResults = [...prevResults];
-                    const existingIndex = newResults.findIndex(r => r.id === place.place_id);
-                    if (existingIndex !== -1) {
-                      newResults.splice(existingIndex, 1);
-                    }
-                    return [...newResults, placeData];
-                  });
-                }
-              });
-            });
-          }
-        });
-      };
-
-      // 검색어 변경시 예측 결과 가져오기
-      let debounceTimer;
-      searchInput.addEventListener('input', (e) => {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-          if (e.target.value) {
-            getPredictions(e.target.value);
-          }
-        }, 300);
-      });
-    }
-  }, []);
-
   // 검색어 변경 시 API 호출
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       searchPlaces(searchText);
-    }, 100);
+    }, 300);
 
     return () => clearTimeout(delayDebounce);
   }, [searchText]);
 
   const handleRouteSelect = (place) => {
-    if (isStartLocation) {
-      onNavigate(place);
-    } else {
-      setSelectedDestination(place);
-    }
+    onNavigate(place);
   };
-
-  const handleBack = () => {
-    if (selectedDestination) {
-      setSelectedDestination(null);
-    } else {
-      setSearchText('');
-      onClose();
-    }
-  };
-
-  if (selectedDestination) {
-    return (
-      <RouteSelectionScreen 
-        destination={selectedDestination}
-        onBack={handleBack}
-        onNavigate={onNavigate}
-      />
-    );
-  }
 
   return (
     <div className="search-screen">
       <div className="search-header">
-        <button className="back-button" onClick={handleBack}>
+        <button className="back-button" onClick={onClose}>
           ←
         </button>
         <div className="search-input-container">
-          <img 
-            src="/images/search_bar/mapspicy.png" 
-            alt="mapspicy" 
+          <img
+            src="/images/search_bar/mapspicy.png"
+            alt="mapspicy"
             className="search-icon"
             style={{
               width: '24px',
@@ -229,18 +112,18 @@ const SearchScreen = ({ onClose, onNavigate, isStartLocation = false }) => {
             autoFocus
           />
           {searchText && (
-            <button 
+            <button
               className="clear-button"
               onClick={() => setSearchText('')}
             >
               ✕
             </button>
           )}
-          <img 
-            src="/images/search_bar/mike.svg" 
-            alt="음성 검색" 
+          <img
+            src="/images/search_bar/mike.svg"
+            alt="음성 검색"
             className="voice-icon"
-            style={{ 
+            style={{
               width: '24px',
               height: '24px',
               cursor: 'pointer',
@@ -249,20 +132,20 @@ const SearchScreen = ({ onClose, onNavigate, isStartLocation = false }) => {
             }}
             onClick={(e) => {
               e.stopPropagation();
+              // 음성 검색 기능 구현 시 여기에 추가
             }}
           />
         </div>
       </div>
 
       <div className="search-results">
-        {/* 로딩 중이어도 기존 결과를 계속 표시 */}
         {searchResults.map((result) => (
           <div key={result.id} className="result-item">
             <div className="result-info">
               <h3 className="result-name">{result.name}</h3>
               <p className="result-address">{result.address}</p>
             </div>
-            <button 
+            <button
               className="find-route-button"
               onClick={() => handleRouteSelect(result)}
             >
@@ -270,13 +153,15 @@ const SearchScreen = ({ onClose, onNavigate, isStartLocation = false }) => {
             </button>
           </div>
         ))}
-        {/* 검색 결과가 없을 때만 메시지 표시 */}
         {!isLoading && searchText && searchResults.length === 0 && (
           <div className="no-results">검색 결과가 없습니다.</div>
+        )}
+        {isLoading && (
+          <div className="loading">검색 중...</div>
         )}
       </div>
     </div>
   );
 };
 
-export default SearchScreen; 
+export default SearchScreen;
