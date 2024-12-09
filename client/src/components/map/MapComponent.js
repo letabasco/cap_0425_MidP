@@ -4,7 +4,7 @@ import MapService from './MapService';
 import MarkerService from './MarkerService';
 import { fetchPlacesData } from './placesAPI';
 
-const MapComponent = ({ selectedMode, activeFilters, setActiveFilters, onFilterClick }) => {
+const MapComponent = ({ selectedMode, activeFilters, setActiveFilters, onFilterClick, onCurrentLocationUpdate }) => {
   const mapRef = useRef(null);
   const mapService = useRef(null);
   const markerService = useRef(null);
@@ -33,6 +33,11 @@ const MapComponent = ({ selectedMode, activeFilters, setActiveFilters, onFilterC
               
               const { latitude, longitude } = position.coords;
               console.log('Current position:', { latitude, longitude });
+              
+              // 현재 위치를 부모 컴포넌트로 전달
+              if (onCurrentLocationUpdate) {
+                onCurrentLocationUpdate({ latitude, longitude });
+              }
               
               // 지도 초기화 및 현재 위치로 설정
               mapService.current = new MapService(mapRef.current, { latitude, longitude });

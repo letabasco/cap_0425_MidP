@@ -1,5 +1,5 @@
 .map-container {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -9,7 +9,9 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  flex: 1;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* 헤더 스타일 */
@@ -44,20 +46,20 @@
 /* 검색바 스타일 */
 .search-bar {
   position: fixed;
-  top: 0px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 32px);
-  max-width: 500px;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: none;
+  margin: 0;
   z-index: 1001;
   background: white;
-  border-radius: 8px;
+  border-radius: 0;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
   padding: 8px 12px;
   height: 44px;
-  margin: 0 16px;
 }
 
 .search-icon {
@@ -95,11 +97,11 @@
 /* 필터 버튼 스타일 */
 .filter-buttons-container {
   position: fixed;
-  top: 40px;
+  top: 44px;
   left: 0;
   right: 0;
   z-index: 1001;
-  padding: 8px 16px 16px 16px;
+  padding: 8px 16px;
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;

@@ -34,7 +34,16 @@ const filterButtons = {
   ],
 };
 
-const Map = ({ selectedMode, isSearchOpen, setIsSearchOpen, onNavigate, onEditStart, onEditDestination }) => {
+const Map = ({ 
+  selectedMode, 
+  isSearchOpen, 
+  setIsSearchOpen, 
+  onNavigate,
+  onEditStart,
+  onEditDestination,
+  onCurrentLocationUpdate,
+  startLocation
+}) => {
   const [activeFilters, setActiveFilters] = useState([]);
 
   const handleFilterClick = (filterText) => {
@@ -48,7 +57,7 @@ const Map = ({ selectedMode, isSearchOpen, setIsSearchOpen, onNavigate, onEditSt
   };
 
   return (
-    <div className="map-container">
+    <div className="map-container" style={{ overflow: 'hidden' }}>
       {/* 상단바, 검색바, 필터 버튼 등 */}
       <div style={{
         position: 'absolute',
@@ -56,7 +65,7 @@ const Map = ({ selectedMode, isSearchOpen, setIsSearchOpen, onNavigate, onEditSt
         left: 0,
         right: 0,
         zIndex: 1000,
-        overflowX: 'auto',
+        overflowX: 'hidden',
         WebkitOverflowScrolling: 'touch',
         width: '100%',
         touchAction: 'pan-x',
@@ -198,6 +207,8 @@ const Map = ({ selectedMode, isSearchOpen, setIsSearchOpen, onNavigate, onEditSt
           activeFilters={activeFilters}
           setActiveFilters={setActiveFilters}
           onFilterClick={handleFilterClick}
+          onCurrentLocationUpdate={onCurrentLocationUpdate}
+          startLocation={startLocation}
         />
       </div>
     </div>
