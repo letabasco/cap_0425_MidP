@@ -1,10 +1,12 @@
 /* global naver */
 import React, { useEffect, useRef, useState } from 'react';
-import MapService from './MapService';
-import MarkerService from './MarkerService';
-import { fetchPlacesData } from './placesAPI';
 
-const MapComponent = ({ selectedMode, activeFilters, setActiveFilters, onFilterClick, onCurrentLocationUpdate }) => {
+/** services에서 import 경로 수정 */
+import MapService from '../../services/MapService';
+import MarkerService from '../../services/MarkerService';
+import { fetchPlacesData } from '../../services/placesApi';
+
+const NaverMap = ({ selectedMode, activeFilters, setActiveFilters, onFilterClick, onCurrentLocationUpdate, startLocation }) => {
   const mapRef = useRef(null);
   const mapService = useRef(null);
   const markerService = useRef(null);
@@ -133,4 +135,4 @@ const MapComponent = ({ selectedMode, activeFilters, setActiveFilters, onFilterC
   return <div ref={mapRef} style={{ width: '100%', height: '100%' }} />;
 };
 
-export default MapComponent;
+export default NaverMap;

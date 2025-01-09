@@ -1,8 +1,9 @@
 // src/components/search/RouteSelectionScreen.js
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import MapService from '../map/MapService';
-import RouteService from '../map/RouteService';
-import RouteInfoPanel from '../map/s_bt';
+/** services import 경로 변경 */
+import MapService from '../../services/MapService';
+import RouteService from '../../services/RouteService';
+import RouteInfoPanel from '../panels/RouteInfoPanel';
 import './RouteSelectionScreen.css';
 
 const RouteSelectionScreen = ({

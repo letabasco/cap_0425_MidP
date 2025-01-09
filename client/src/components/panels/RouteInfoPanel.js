@@ -1,6 +1,7 @@
+// src/components/panels/RouteInfoPanel.js
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import './s_bt.css';
+import './RouteInfoPanel.css';
 
 const RouteInfoPanel = ({ 
   routeInfo,

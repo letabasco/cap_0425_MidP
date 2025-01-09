@@ -1,11 +1,9 @@
-import React, { useState, useRef, useCallback } from 'react';
+// src/components/panels/UserSettingsPanel.js
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import './CustomSettingsPanel.css';
+import './UserSettingsPanel.css';
 
-// 사용자 설정 패널 컴포넌트
-// 드래그 가능한 바텀 시트 형태의 설정 패널 제공
-
-const CustomSettingsPanel = ({ onModeChange, selectedMode = '일반' }) => {
+const UserSettingsPanel = ({ onModeChange, selectedMode = '일반' }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const panelRef = useRef(null);
 
@@ -102,9 +100,10 @@ const CustomSettingsPanel = ({ onModeChange, selectedMode = '일반' }) => {
   );
 };
 
-CustomSettingsPanel.propTypes = {
+
+UserSettingsPanel.propTypes = {
   onModeChange: PropTypes.func.isRequired,
   selectedMode: PropTypes.string
 };
 
-export default CustomSettingsPanel;
+export default UserSettingsPanel;

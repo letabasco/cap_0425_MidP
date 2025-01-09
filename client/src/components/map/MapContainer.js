@@ -1,7 +1,7 @@
-// src/components/map/Map.js
+// src/components/map/MapContainer.js
 import React, { useState } from 'react';
-import MapComponent from './MapComponent';
-import './Map.css';
+import NaverMap from './NaverMap';
+import './MapContainer.css';
 
 // filterButtons 정의
 const filterButtons = {
@@ -34,7 +34,7 @@ const filterButtons = {
   ],
 };
 
-const Map = ({ 
+const MapContainer = ({ 
   selectedMode, 
   isSearchOpen, 
   setIsSearchOpen, 
@@ -202,7 +202,7 @@ const Map = ({
 
       {/* 실제 지도 렌더 */}
       <div className="map-component-container">
-        <MapComponent
+        <NaverMap
           selectedMode={selectedMode}
           activeFilters={activeFilters}
           setActiveFilters={setActiveFilters}
@@ -215,4 +215,4 @@ const Map = ({
   );
 };
 
-export default Map;
+export default MapContainer;

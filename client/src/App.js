@@ -1,11 +1,12 @@
 // src/App.js
-import React, { useState, useEffect } from "react";
-import axios from 'axios'; // 현재 위치 가져오기 위해 axios 추가
-import Map from "./components/map/Map";
-import CustomSettingsPanel from "./components/map/CustomSettingsPanel";
+import React, { useState } from "react";
+import "./App.css";
+
+/** 컴포넌트 import 경로 변경 */
+import MapContainer from "./components/map/MapContainer";
+import UserSettingsPanel from "./components/panels/UserSettingsPanel";
 import RouteSelectionScreen from "./components/search/RouteSelectionScreen";
 import SearchScreen from "./components/search/SearchScreen";
-import "./App.css";
 
 const App = () => {
   const [selectedMode, setSelectedMode] = useState('일반');
@@ -52,23 +53,19 @@ const App = () => {
   const handleNavigate = (dest) => {
     setDestination(dest);
     setIsSearchOpen(false);
-    // 출발지가 아직 설정되지 않은 경우 현재 위치를 자동으로 설정
-    if (!startLocation) {
-      // 현재 위치를 가져오는 로직을 여기에 추가하거나,
-      // App.js에서 현재 위치를 가져와 setStartLocation을 호출할 수 있음.
-      // 이미 아래 useEffect에서 처리하므로 여기선 별도로 할 필요 없음.
-    }
+    // 출발지가 아직 설정되지 않은 경우 현재 위치를 자동으로 설정할 수도 있음
   };
 
   const handleRouteBack = () => {
     setDestination(null);
   };
 
+  /** 지도에서 현재 위치를 받아 업데이트 */
   const updateCurrentLocation = (location) => {
     const locationData = {
       id: 'current-location',
       name: '현재 위치',
-      address: '', // 주소 정보는 필요에 따라 추가
+      address: '',
       coords: location
     };
     setStartLocation(locationData);
@@ -113,7 +110,7 @@ const App = () => {
       {/* 지도 화면 (기본 화면) */}
       {!destination && !isSearchOpen && (
         <>
-          <Map
+          <MapContainer
             selectedMode={selectedMode}
             isSearchOpen={isSearchOpen}
             setIsSearchOpen={setIsSearchOpen}
@@ -123,7 +120,7 @@ const App = () => {
             onCurrentLocationUpdate={updateCurrentLocation}
             startLocation={startLocation}
           />
-          <CustomSettingsPanel
+          <UserSettingsPanel
             onModeChange={handleModeChange}
             selectedMode={selectedMode}
           />
