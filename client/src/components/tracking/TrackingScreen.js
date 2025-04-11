@@ -214,7 +214,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
        {/* 상단 바: 목적지 정보 및 뒤로 가기 */}
        <div className="tracking-header">
          <button className="tracking-back-button" onClick={handleBackClick}>
-           <img src="/images/RouteSelectionScreen/back.svg" alt="뒤로 가기" />
+           <img src="/images/RouteSelectionScreen/back.png" alt="뒤로 가기" />
          </button>
          <div className="destination-info">
            <h3>{destination?.name || '목적지'}</h3>
