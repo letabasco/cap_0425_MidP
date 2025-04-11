@@ -1,7 +1,7 @@
 // src/App.js
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import SuggestionsPage from './pages/SuggestPage'; // 새 페이지 컴포넌트
+import SuggestionsPage from './components/pages/SuggestPage'; // 새 페이지 컴포넌트
 import "./App.css";
 
 /** 컴포넌트 import 경로 변경 */
