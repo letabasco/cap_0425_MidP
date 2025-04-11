@@ -7,6 +7,8 @@ const geocode = require('./router/geocode');
 const directionRouter = require("./router/directionRouter");
 const placesRouter = require('./router/placesRouter');
 
+const preprocessRouter = require('./router/preprocess');
+
 const app = express();
 const PORT = 3001;
 app.use(express.json());
@@ -17,6 +19,8 @@ app.use(
     origin: "http://localhost:3000", // React 앱에서 오는 요청을 허용
   })
 );
+
+app.use('/', preprocessRouter);
 
 // 기본 경로 처리
 app.get("/", (req, res) => {

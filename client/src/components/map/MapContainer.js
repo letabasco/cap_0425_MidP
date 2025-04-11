@@ -1,36 +1,31 @@
 // src/components/map/MapContainer.js
 import React, { useState } from 'react';
 import NaverMap from './NaverMap';
+import MenuPanel from '../panels/MenuPanel'; // Menu기능 추가
 import './MapContainer.css';
 
 // filterButtons 정의
 const filterButtons = {
   '일반': [
-    { icon: '/images/icon/normal/gong4.png', text: '공사현장' },
     { icon: '/images/icon/normal/store.png', text: '편의점' },
     { icon: '/images/icon/normal/oneonenine.png', text: '소방시설' },
     { icon: '/images/icon/normal/police.png', text: '경찰서' },
-    { icon: '/images/icon/normal/warning.png', text: '범죄주의구간' },
   ],
   '여성': [
-    { icon: '/images/icon/women/siren.png', text: '안전비상벨' }, // 'wemen' → 'women' 오타 수정
+    { icon: '/images/icon/women/siren.png', text: '안전비상벨' },
     { icon: '/images/icon/women/cctv.png', text: 'CCTV' },
-    { icon: '/images/icon/women/warning.png', text: '범죄주의구간' },
     { icon: '/images/icon/women/store.png', text: '편의점' },
     { icon: '/images/icon/women/oneonenine.png', text: '소방시설' },
     { icon: '/images/icon/women/police.png', text: '경찰서' },
-    { icon: '/images/icon/women/gong4.png', text: '공사현장' },
   ],
   '노약자': [
-    { icon: '/images/icon/old/ele.svg', text: '지하철역 엘레베이터' },
-    { icon: '/images/icon/old/drugstore.svg', text: '심야약국' },
+    { icon: '/images/icon/old/ele.png', text: '지하철역 엘레베이터' },
+    { icon: '/images/icon/old/drugstore.png', text: '심야약국' },
     { icon: '/images/icon/old/charge.png', text: '휠체어 충전소' },
     { icon: '/images/icon/old/noin.png', text: '복지시설' },
-    { icon: '/images/icon/old/warning.png', text: '범죄주의구간' },
     { icon: '/images/icon/old/store.png', text: '편의점' },
     { icon: '/images/icon/old/oneonenine.png', text: '소방시설' },
     { icon: '/images/icon/old/police.png', text: '경찰서' },
-    { icon: '/images/icon/old/gong4.png', text: '공사현장' },
   ],
 };
 
@@ -45,6 +40,9 @@ const MapContainer = ({
   startLocation
 }) => {
   const [activeFilters, setActiveFilters] = useState([]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // 메뉴 열림 기능 추가
+
+  const toggleMenu = () => setIsMenuOpen(prev => !prev); // 
 
   const handleFilterClick = (filterText) => {
     console.log('Filter clicked:', filterText);
@@ -73,63 +71,36 @@ const MapContainer = ({
         background: 'transparent',
         pointerEvents: 'auto'
       }}>
+
         {/* 검색바 */}
         <div className="search-bar" style={{
-          width: '100%',  // 전체 너비 사용
+          width: '90%',
           maxWidth: 'calc(100% - 32px)',  // 양쪽 여백 16px씩
           margin: '0 auto'  // 중앙 정렬
         }}>
-          {/* mapspicy 로고 */}
-          <div 
-            style={{
-              width: '40px',
-              height: '40px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              marginRight: '8px'
-            }}
-          >
-            <img 
-              src="/images/search_bar/mapspicy.png" 
-              alt="mapspicy" 
-              style={{ 
-                width: '100%',
-                height: '100%',
-                objectFit: 'contain'
-              }}
-            />
-          </div>
-
-          {/* 메뉴 버튼 */}
+          
+          {/* ≡ 메뉴 버튼으로 변경 */}
           <button 
-            className="menu-button" 
-            style={{ 
-              border: 'none', 
-              background: 'none', 
-              cursor: 'pointer',
-              fontSize: '24px',
-              padding: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
+            className="menu-button"
+            style={{
+              cursor: 'pointer'
             }}
             onClick={(e) => {
               e.stopPropagation();
-              // 메뉴 클릭 핸들러 추가
+              toggleMenu(); // 메뉴 열고 닫기
             }}
           >
             ≡
           </button>
 
-          {/* 검색 력창 */}
+
+          {/* 검색 입력창 */}
           <div 
             onClick={() => onEditDestination()} // 도착지 검색 열기
             style={{
               flex: 1,
               cursor: 'pointer',
-              height: '100%',
+              height: '70%',
               display: 'flex',
               alignItems: 'center'
             }}
@@ -149,29 +120,6 @@ const MapContainer = ({
               }}
             />
           </div>
-
-          {/* 음성 검색 버튼 */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            marginLeft: '8px'
-          }}>
-            <img 
-              src="/images/search_bar/mike.svg" 
-              alt="음성 검색" 
-              className="voice-icon"
-              style={{ 
-                width: '24px',
-                height: '24px',
-                cursor: 'pointer',
-                padding: '8px'
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                // 음성 검색 기능 구현 시 여기에 추가
-              }}
-            />
-          </div>
         </div>
         
         {/* 필터 버튼 */}
@@ -188,8 +136,8 @@ const MapContainer = ({
                   alt={button.text}
                   className="filter-button-icon"
                   style={{
-                    width: '24px',
-                    height: '24px',
+                    width: '20px',
+                    height: '20px',
                     objectFit: 'contain'
                   }}
                 />
@@ -211,6 +159,10 @@ const MapContainer = ({
           startLocation={startLocation}
         />
       </div>
+
+      {/* 메뉴 패널 삽입 */}
+      <MenuPanel isOpen={isMenuOpen} onClose={toggleMenu} />
+
     </div>
   );
 };
