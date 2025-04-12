@@ -1,7 +1,7 @@
 /* 사용자 맞춤 설정 패널 - 우측 상단 고정 */
 .setting-panel {
   position: fixed;
-  top: calc(130px + 1vh);
+  top: calc(110px + 1vh);
   right: 20px;
   z-index: 1002;
   display: flex;
@@ -11,8 +11,8 @@
 
 /* 펼치기 토글 버튼 */
 .setting-toggle-button {
-  width: 35px;
-  height: 35px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
   background-color: white;
   color: white;

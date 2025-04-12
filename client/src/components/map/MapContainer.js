@@ -7,25 +7,25 @@ import './MapContainer.css';
 // filterButtons 정의
 const filterButtons = {
   '일반': [
-    { icon: '/images/icon/normal/store.png', text: '편의점' },
-    { icon: '/images/icon/normal/oneonenine.png', text: '소방시설' },
-    { icon: '/images/icon/normal/police.png', text: '경찰서' },
+    { icon: '/images/map/category/store.png', text: '편의점' },
+    { icon: '/images/map/category/oneonenine.png', text: '소방시설' },
+    { icon: '/images/map/category/police.png', text: '경찰서' },
   ],
   '여성': [
-    { icon: '/images/icon/women/siren.png', text: '안전비상벨' },
-    { icon: '/images/icon/women/cctv.png', text: 'CCTV' },
-    { icon: '/images/icon/women/store.png', text: '편의점' },
-    { icon: '/images/icon/women/oneonenine.png', text: '소방시설' },
-    { icon: '/images/icon/women/police.png', text: '경찰서' },
+    { icon: '/images/map/category/siren.png', text: '안전비상벨' },
+    { icon: '/images/map/category/cctv.png', text: 'CCTV' },
+    { icon: '/images/map/category/store.png', text: '편의점' },
+    { icon: '/images/map/category/oneonenine.png', text: '소방시설' },
+    { icon: '/images/map/category/police.png', text: '경찰서' },
   ],
   '노약자': [
-    { icon: '/images/icon/old/ele.png', text: '지하철역 엘레베이터' },
-    { icon: '/images/icon/old/drugstore.png', text: '심야약국' },
-    { icon: '/images/icon/old/charge.png', text: '휠체어 충전소' },
-    { icon: '/images/icon/old/noin.png', text: '복지시설' },
-    { icon: '/images/icon/old/store.png', text: '편의점' },
-    { icon: '/images/icon/old/oneonenine.png', text: '소방시설' },
-    { icon: '/images/icon/old/police.png', text: '경찰서' },
+    { icon: '/images/map/category/ele.png', text: '지하철역 엘레베이터' },
+    { icon: '/images/map/category/drugstore.png', text: '심야약국' },
+    { icon: '/images/map/category/charge.png', text: '휠체어 충전소' },
+    { icon: '/images/map/category/noin.png', text: '복지시설' },
+    { icon: '/images/map/category/store.png', text: '편의점' },
+    { icon: '/images/map/category/oneonenine.png', text: '소방시설' },
+    { icon: '/images/map/category/police.png', text: '경찰서' },
   ],
 };
 
@@ -107,7 +107,7 @@ const MapContainer = ({
           >
             <input 
               type="text" 
-              placeholder="장소, 버스, 지하철, 주소 검색" 
+              placeholder="원하는 장소, 주소를 입력하세요" 
               className="search-input" 
               readOnly
               style={{

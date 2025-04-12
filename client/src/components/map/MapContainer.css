@@ -208,8 +208,16 @@
     }
   
     .filter-button {
-      padding: 6px 12px;
+      padding: 4px 10px;
       font-size: 13px;
+      border: 2px solid white;
+      transition: all 0.2s ease;
+    }
+
+    .filter-button.active {
+      border-color: #87CEFA;
+      color: #1E90FF;
+      font-weight: bold;
     }
   }
   
@@ -279,9 +287,26 @@
     }
   }
   
-  /* width 770 이상에서 텍스트 밀림 수정 */
   @media (min-width: 770px) {
+    /* width 770 이상에서 텍스트 밀림 수정 */
     .search-input {
       padding-left: 14px;
+    }
+    /* width 770 이상에서 input과 너무 멀어짐 수정 */
+    .filter-buttons-container {
+      padding-left: 3vw;
+    }
+
+    .filter-button {
+      padding: 4px 10px;
+      font-size: 13px;
+      border: 2px solid white;
+      transition: all 0.2s ease;
+    }
+
+    .filter-button.active {
+      border-color: #87CEFA;
+      color: #1E90FF;
+      font-weight: bold;
     }
   }
