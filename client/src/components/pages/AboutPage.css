@@ -1,54 +1,89 @@
-/* src/pages/AboutPage.css */
-.about-container {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 2rem;
-  }
-  
-  .about-feature-list {
-    padding-left: 1.5rem;
-    margin: 2rem 0;
-  }
-  
-  .about-feature-list li {
-    margin: 1rem 0;
-    font-size: 1.1rem;
-    color: #2c3e50;
-    padding: 0.8rem;
-    background: #f8f9fa;
-    border-radius: 6px;
-  }
+.info-page {
+  width: 80%;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
 
-  .back-button-about {
-    background: none;
-    border: none;
-    color: #3498db;
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    cursor: pointer;
-    text-align: left;
-  }
+/* 뒤로가기 버튼 */
+.back-button-about {
+  background: none;
+  border: none;
+  color: #3498db;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  text-align: left;
+}
 
-  .back-button-about:hover {
-    text-decoration: underline;
-  }
-  
-  .team-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
-  }
-  
-  .member-card {
-    padding: 2rem;
-    border: 1px solid #e9ecef;
-    border-radius: 12px;
-    text-align: center;
-    transition: transform 0.2s;
-  }
-  
-  .member-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  }
+.back-button-about:hover {
+  text-decoration: underline;
+}
+
+/* 타이틀 */
+.info-page h1 {
+  text-align: center;
+  color: #2c3e50;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* 섹션 제목 */
+.info-page h2 {
+  margin-top: 2rem;
+  color: #2c3e50;
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+/* 기능 리스트 */
+.feature-list {
+  padding-left: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.feature-list li {
+  padding: 0.8rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  font-size: 1.05rem;
+  color: #34495e;
+}
+
+/* 팀 카드 */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.member-card {
+  padding: 1.5rem;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  text-align: center;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+}
+
+.member-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.member-card h3 {
+  margin-bottom: 0.8rem;
+  color: #2c3e50;
+}
+
+.member-card p {
+  margin: 0.4rem 0;
+  color: #555;
+}

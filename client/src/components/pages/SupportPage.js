@@ -35,7 +35,7 @@ const SupportPage = () => {
       <section>
         <h2>1:1 문의</h2>
         <form className="inquiry-form">
-          <input type="email" placeholder="이메일" required />
+          <input type="text" placeholder="문의 종류" required />
           <textarea placeholder="문의 내용" rows="5" required />
           <button type="submit">문의 보내기</button>
         </form>
