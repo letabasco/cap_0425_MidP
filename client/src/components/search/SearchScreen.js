@@ -1,12 +1,16 @@
 // SearchScreen.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './SearchScreen.css';
 
 const SearchScreen = ({ onClose, onNavigate, isStartLocation = false }) => {
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const location = useLocation(); // SuggestPage에서 진입했는지 체크
+  const navigate = useNavigate();
 
   // 카카오 장소 검색 API 호출 (키워드 + 주소)
   const searchPlaces = async (keyword) => {
@@ -82,14 +86,30 @@ const SearchScreen = ({ onClose, onNavigate, isStartLocation = false }) => {
   }, [searchText]);
 
   const handleRouteSelect = (place) => {
-    onNavigate(place);
+    // SuggestPage에서 들어왔을 경우
+    if (location.state?.fromSuggestPage) {
+      navigate('/suggest', {
+        state: { selectedAddress: place.address }
+      });
+    } else {
+      onNavigate(place); // 기존 길찾기 기능
+    }
   };
 
   return (
     <div className="search-screen">
       <div className="search-header">
         <button className="back-button" onClick={onClose}>
-          ←
+          <img
+            src="/images/search_bar/back.png"
+            alt="back-arrow"
+            className="back-icon"
+            style={{
+              width: '24px',
+              height: '24px',
+              objectFit: 'contain'
+            }}
+          />
         </button>
         <div className="search-input-container">
           <img
@@ -119,22 +139,6 @@ const SearchScreen = ({ onClose, onNavigate, isStartLocation = false }) => {
               ✕
             </button>
           )}
-          <img
-            src="/images/search_bar/mike.svg"
-            alt="음성 검색"
-            className="voice-icon"
-            style={{
-              width: '24px',
-              height: '24px',
-              cursor: 'pointer',
-              padding: '8px',
-              marginLeft: '8px'
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
-              // 음성 검색 기능 구현 시 여기에 추가
-            }}
-          />
         </div>
       </div>
 

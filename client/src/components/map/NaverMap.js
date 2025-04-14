@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 /** services에서 import 경로 수정 */
 import MapService from '../../services/MapService';
 import MarkerService from '../../services/MarkerService';
-import { fetchPlacesData } from '../../services/placesApi';
+import { getPlacesForFilter } from '../../services/placesApi';
 
 const NaverMap = ({ selectedMode, activeFilters, setActiveFilters, onFilterClick, onCurrentLocationUpdate, startLocation }) => {
   const mapRef = useRef(null);
@@ -18,14 +18,31 @@ const NaverMap = ({ selectedMode, activeFilters, setActiveFilters, onFilterClick
   useEffect(() => {
     let isSubscribed = true;
 
+    const waitForNaverMaps = () => {
+      return new Promise((resolve, reject) => {
+        if (window.naver && window.naver.maps) {
+          resolve();
+        } else {
+          const checkCount = { count: 0 };
+          const interval = setInterval(() => {
+            if (window.naver && window.naver.maps) {
+              clearInterval(interval);
+              resolve();
+            } else if (checkCount.count > 20) { // 10초 후에도 로드되지 않으면 에러
+              clearInterval(interval);
+              reject(new Error('Naver Maps API 로드 실패'));
+            }
+            checkCount.count++;
+          }, 500);
+        }
+      });
+    };
+
     const initializeMap = async () => {
       if (!mapRef.current || mapService.current) return;
 
       try {
-        if (!window.naver || !window.naver.maps) {
-          console.error('Naver Maps API is not loaded');
-          return;
-        }
+        await waitForNaverMaps();
 
         // 현재 위치 가져오기
         if (navigator.geolocation) {
@@ -80,9 +97,13 @@ const NaverMap = ({ selectedMode, activeFilters, setActiveFilters, onFilterClick
         }
       } catch (error) {
         console.error('Map initialization error:', error);
+        // 위치 정보를 가져올 수 없는 경우에도 지도는 초기화
+        mapService.current = new MapService(mapRef.current);
+        markerService.current = new MarkerService();
+        setIsMapReady(true);
       }
     };
-
+    
     initializeMap();
 
     return () => {
@@ -91,9 +112,10 @@ const NaverMap = ({ selectedMode, activeFilters, setActiveFilters, onFilterClick
         navigator.geolocation.clearWatch(watchPositionId.current);
       }
     };
-  }, []);
+  }, [onCurrentLocationUpdate]);
 
   // 필터 변경 감지 및 마커 업데이트
+
   useEffect(() => {
     if (!mapService.current || !markerService.current || !isMapReady) return;
 
@@ -106,29 +128,29 @@ const NaverMap = ({ selectedMode, activeFilters, setActiveFilters, onFilterClick
     
     // 이전 상태와 현재 상태를 비교하여 변경된 필터만 처리
     const currentFiltersSet = new Set(activeFilters);
-    
     // 제거된 필터 처리
     [...prevActiveFilters.current].forEach(filter => {
       if (!currentFiltersSet.has(filter)) {
         markerService.current.removeMarkers(filter);
       }
     });
-
-    // 새로 추가된 필터 처리
+    // 새로운 필터에 대해 getPlacesForFilter 호출
     activeFilters.forEach(async (filter) => {
       if (!prevActiveFilters.current.has(filter)) {
         try {
-          const places = await fetchPlacesData(filter, currentLocation);
+          console.log(`${filter} 데이터 요청 중...`);
+          const places = await getPlacesForFilter(filter, currentLocation);
           if (places && places.length > 0) {
+            console.log(`${filter} ${places.length}개 발견`);
             markerService.current.toggleMarkers(mapInstance, places, filter);
+          } else {
+            console.log(`주변에 ${filter} 데이터가 없습니다.`);
           }
         } catch (error) {
           console.error(`Error fetching places for ${filter}:`, error);
         }
       }
     });
-
-    // 현재 상태를 이전 상태로 저장
     prevActiveFilters.current = currentFiltersSet;
   }, [activeFilters, isMapReady]);
 
