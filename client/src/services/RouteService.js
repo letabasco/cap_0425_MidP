@@ -228,7 +228,7 @@ class RouteService {
         position: new naver.maps.LatLng(cctv.latitude, cctv.longitude),
         map: this.mapInstance,
         icon: { 
-          url: '/images/icon/women/cctv.png',
+          url: '/images/map/direction/cctv.png',
           size: new naver.maps.Size(24, 24), 
           scaledSize: new naver.maps.Size(24, 24), 
           origin: new naver.maps.Point(0, 0),
@@ -278,7 +278,7 @@ class RouteService {
         position: new naver.maps.LatLng(store.latitude, store.longitude),
         map: this.mapInstance,
         icon: {
-          url: '/images/icon/normal/store.png',
+          url: '/images/map/direction/store.png',
           size: new naver.maps.Size(24, 24),
           scaledSize: new naver.maps.Size(24, 24),
           origin: new naver.maps.Point(0, 0),

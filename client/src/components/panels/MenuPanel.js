@@ -14,10 +14,10 @@ const MenuPanel = ({ isOpen, onClose }) => {
       <div className="menu-content">
         <h3>메뉴</h3>
         <ul>
-          <li>서비스 소개</li>
-          <li onClick={() => navigate('/suggest')}>건의함</li> {/* 수정 */}
-          <li>설명문</li>
-          <li>고객센터</li>
+          <li onClick={() => navigate('/about')}>🚀 서비스 소개</li>
+          <li onClick={() => navigate('/suggest')}>📢 건의함</li>
+          <li onClick={() => navigate('/terms')}>📜 설명문</li>
+          <li onClick={() => navigate('/support')}>📞 고객센터</li>
         </ul>
       </div>
     </div>

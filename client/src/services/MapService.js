@@ -19,7 +19,7 @@ class MapService {
     this.currentLocationMarker = null;
     this.lastKnownPosition = null;
      
-    // 현재 위치 마커 아이콘 정의(수정 필요함)
+    // 현재 위치 마커 아이콘 정의
     this.currentLocationIcon = {
       content: `
         <div style="position: relative; width: 40px; height: 40px;">
