@@ -242,39 +242,15 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
        <div className="tracking-map-container" ref={mapRef}></div>
        
        {/* 현재 위치 버튼 - 완전히 독립적인 클래스명 사용 */}
-       <div 
-         className="tracking-location-btn-container"
-         style={{
-           position: 'fixed',
-           left: '20px',
-           bottom: '20px',
-           zIndex: 9999
-         }}
-       >
+       <div className="tracking-location-btn-container">
          <button 
            className={`tracking-location-btn ${isLocationButtonActive ? 'active' : ''}`}
            onClick={handleRecenter}
-           style={{
-             position: 'relative',
-             width: '45px',
-             height: '45px',
-             borderRadius: '50%',
-             backgroundColor: isLocationButtonActive ? '#597BEB' : 'white',
-             border: 'none',
-             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
-             padding: '8px',
-             cursor: 'pointer'
-           }}
          >
+           {isLocationButtonActive && <div className="tracking-location-pulse"></div>}
            <img 
              src="/images/RouteSelectionScreen/location.svg" 
              alt="현재 위치로 이동"
-             style={{
-               width: '100%',
-               height: '100%',
-               objectFit: 'contain',
-               filter: isLocationButtonActive ? 'brightness(0) invert(1)' : 'none'
-             }}
            />
          </button>
        </div>
