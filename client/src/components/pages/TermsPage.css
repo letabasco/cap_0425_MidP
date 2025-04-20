@@ -3,12 +3,12 @@
   height: 100vh;
   margin: 0 auto;
   padding: 2rem;
-  overflow-y: auto; /* ✅ 세로 스크롤 가능 */
+  overflow-y: auto;
   box-sizing: border-box;
   background: #fff;
 }
 
-.back-button-term {
+.guide-container .back-button-term {
   background: none;
   border: none;
   color: #3498db;
@@ -18,11 +18,11 @@
   text-align: left;
 }
 
-.back-button-term:hover {
+.guide-container .back-button-term:hover {
   text-decoration: underline;
 }
 
-.guide-title {
+.guide-container .guide-title {
   color: #2c3e50;
   text-align: center;
   margin-bottom: 2rem;
@@ -30,7 +30,7 @@
   padding-bottom: 1rem;
 }
 
-.guide-section {
+.guide-container .guide-section {
   margin-bottom: 2rem;
   padding: 1.5rem;
   background: #f8f9fa;
@@ -38,7 +38,7 @@
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.instruction-card {
+.guide-container .instruction-card {
   display: flex;
   align-items: start;
   gap: 1.5rem;
@@ -49,7 +49,7 @@
   flex-wrap: wrap;
 }
 
-.step-number {
+.guide-container .step-number {
   width: 40px;
   height: 40px;
   background: #3498db;
@@ -62,18 +62,18 @@
   flex-shrink: 0;
 }
 
-.step-content {
+.guide-container .step-content {
   flex: 1;
 }
 
-.feature-grid {
+.guide-container .feature-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.5rem;
   margin-top: 1rem;
 }
 
-.feature-card {
+.guide-container .feature-card {
   padding: 1.5rem;
   background: white;
   border-radius: 8px;
@@ -81,45 +81,45 @@
   transition: transform 0.2s;
 }
 
-.feature-card:hover {
+.guide-container .feature-card:hover {
   transform: translateY(-3px);
 }
 
-.feature-icon {
+.guide-container .feature-icon {
   font-size: 2.5rem;
   margin-bottom: 1rem;
 }
 
-.function-list {
+.guide-container .function-list {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.function-item {
+.guide-container .function-item {
   padding: 1.2rem;
   background: white;
   border-left: 4px solid #3498db;
   border-radius: 5px;
 }
 
-.emergency-info {
+.guide-container .emergency-info {
   background: #fff3f3;
   border: 2px solid #ff6b6b;
 }
 
-.emergency-steps {
+.guide-container .emergency-steps {
   counter-reset: step;
   padding-left: 2rem;
 }
 
-.emergency-steps li {
+.guide-container .emergency-steps li {
   counter-increment: step;
   margin: 1rem 0;
   position: relative;
 }
 
-.emergency-steps li::before {
+.guide-container .emergency-steps li::before {
   content: counter(step);
   position: absolute;
   left: -2rem;
@@ -132,12 +132,112 @@
   line-height: 1.5rem;
 }
 
-.highlight {
+.guide-container .highlight {
   color: #e74c3c;
   font-weight: 600;
 }
 
-.icon-sample {
+.guide-container .icon-sample {
   display: inline-block;
   margin: 0 5px;
+}
+
+/* 📱 모바일 반응형 (720px 이하) */
+@media (max-width: 720px) {
+  .guide-container {
+    width: 100%;
+    padding: 1rem;
+    margin: 0;
+  }
+
+  .guide-container .guide-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom-width: 2px;
+  }
+
+  .guide-container .guide-section {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+  }
+
+  .guide-container .instruction-card {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .guide-container .step-number {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+
+  .guide-container .step-content h3 {
+    font-size: 1.1rem;
+  }
+
+  .guide-container .step-content li {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .guide-container .feature-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .guide-container .feature-card {
+    padding: 1rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .guide-container .feature-icon {
+    font-size: 2rem;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .guide-container .function-item {
+    padding: 1rem;
+    border-left-width: 3px;
+  }
+
+  .guide-container .back-button-term {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background: rgba(255,255,255,0.9);
+    padding: 8px;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 100;
+  }
+
+  /* 본 페이지에만 적용되도록 한정 */
+  .guide-container h2 {
+    font-size: 1.2rem;
+    margin: 0.8rem 0;
+  }
+
+  .guide-container p,
+  .guide-container li {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .guide-container .function-item h3 {
+    font-size: 1rem;
+  }
+
+  .guide-container button,
+  .guide-container .feature-card {
+    min-height: 48px;
+  }
 }

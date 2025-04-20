@@ -2,12 +2,19 @@ require("dotenv").config(); // .env 파일 로드
 const express = require("express");
 const cors = require("cors");
 const axios = require('axios');
+
 const geocodeRouter = require("./router/geocodeRouter");
 const geocode = require('./router/geocode');
 const directionRouter = require("./router/directionRouter");
-const placesRouter = require('./router/placesRouter');
 
-const preprocessRouter = require('./router/preprocess');
+const policePlacesRouter = require("./router/filter/policePlacesRouter");
+const fireStationRouter = require("./router/filter/fireStationPlacesRouter");
+const womenPlacesRouter = require('./router/filter/womenPlacesRouter');
+const elderlyPlacesRouter = require('./router/filter/elderlyPlacesRouter');
+const pharmacyPlacesRouter = require('./router/filter/pharmacyPlacesRouter');
+const cctvPlaceRouter = require("./router/filter/cctvPlaceRouter");
+const conveniencesStoreRouter = require("./router/filter/convenienceStorePlacesRouter");
+const wheelChairPlacesRouter = require('./router/filter/wheelChairPlacesRouter'); // Add this line
 
 const app = express();
 const PORT = 3001;
@@ -16,11 +23,9 @@ app.use(express.json());
 // CORS 설정
 app.use(
   cors({
-    origin: "http://localhost:3000", // React 앱에서 오는 요청을 허용
+    origin: "http://localhost:3000", // React 앱에서 오는 요청 허용
   })
 );
-
-app.use('/', preprocessRouter);
 
 // 기본 경로 처리
 app.get("/", (req, res) => {
@@ -28,13 +33,19 @@ app.get("/", (req, res) => {
 });
 
 // 라우터 연결
-
 app.use("/geocode", geocodeRouter);
 app.use('/api/geocode', geocode);
-
 app.use("/direction", directionRouter);
 
-app.use('/api/places', placesRouter);
+// 필터링된 장소 API 라우터 연결
+app.use('/api/policePlaces', policePlacesRouter);
+app.use('/api/fireStationPlaces', fireStationRouter);
+app.use('/api/ConvenienceStores', conveniencesStoreRouter);
+app.use('/api/womenPlaces', womenPlacesRouter);
+app.use('/api/elderlyPlaces', elderlyPlacesRouter);
+app.use('/api/pharmacyPlaces', pharmacyPlacesRouter);
+app.use('/api/cctvPlaces', cctvPlaceRouter);
+app.use('/api/wheelChairPlaces', wheelChairPlacesRouter);
 
 app.use(cors());
 
@@ -94,6 +105,3 @@ app.listen(PORT, () => {
   console.log('- API Key status:', GOOGLE_API_KEY ? 'Set' : 'Not set');
   console.log('- API Key value:', GOOGLE_API_KEY ? `${GOOGLE_API_KEY.substr(0, 5)}...` : 'Missing');
 });
-
-// 박기성 왔다감
-// 안현진 확인함

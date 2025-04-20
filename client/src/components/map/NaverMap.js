@@ -6,7 +6,7 @@ import MapService from '../../services/MapService';
 import MarkerService from '../../services/MarkerService';
 import { fetchPlacesData } from '../../services/placesApi';
 
-const NaverMap = ({ selectedMode, activeFilters, setActiveFilters, onFilterClick, onCurrentLocationUpdate, startLocation }) => {
+const NaverMap = ({ selectedMode, activeFilters, setActiveFilters, onFilterClick, onCurrentLocationUpdate, startLocation, mapServiceRef }) => {
   const mapRef = useRef(null);
   const mapService = useRef(null);
   const markerService = useRef(null);
@@ -60,6 +60,9 @@ const NaverMap = ({ selectedMode, activeFilters, setActiveFilters, onFilterClick
               
               // 지도 초기화 및 현재 위치로 설정
               mapService.current = new MapService(mapRef.current, { latitude, longitude });
+              if (mapServiceRef) {
+                mapServiceRef.current = mapService.current;
+              } 
               markerService.current = new MarkerService();
               setIsMapReady(true);
 

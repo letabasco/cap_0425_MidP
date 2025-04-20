@@ -4,7 +4,10 @@ const cctvService = {
   getCCTVData: async () => {
     try {
       // 일반 인증키 (Decoding)
-      const serviceKey = 'tM2CcqNLmOh1H/mJrtUz+Q/v20hppCEEet5Xc1OqN3V+5tn90SEVQ8GqGRdhp5Slcq/4xEUF8AmXoBBIP75gdg==';
+      const serviceKey = process.env.CCTV_API_KEY;
+      if (!serviceKey) {
+        throw new Error('CCTV 서비스 키가 설정되지 않았습니다.');
+      }
       
       // URL 구성 (새로운 URL로 수정)
       const url = 'https://api.odcloud.kr/api/15083776/v1/uddi:c311f3b0-6de3-4269-b4b3-bd3ea8eedbff';

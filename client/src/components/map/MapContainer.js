@@ -1,10 +1,9 @@
 // src/components/map/MapContainer.js
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import NaverMap from './NaverMap';
-import MenuPanel from '../panels/MenuPanel'; // Menu기능 추가
+import MenuPanel from '../panels/MenuPanel';
 import './MapContainer.css';
 
-// filterButtons 정의
 const filterButtons = {
   '일반': [
     { icon: '/images/map/category/store.png', text: '편의점' },
@@ -19,7 +18,7 @@ const filterButtons = {
     { icon: '/images/map/category/police.png', text: '경찰서' },
   ],
   '노약자': [
-    { icon: '/images/map/category/ele.png', text: '지하철역 엘레베이터' },
+    { icon: '/images/map/category/ele.png', text: '지하철역 엘리베이터' },
     { icon: '/images/map/category/drugstore.png', text: '심야약국' },
     { icon: '/images/map/category/charge.png', text: '휠체어 충전소' },
     { icon: '/images/map/category/noin.png', text: '복지시설' },
@@ -40,23 +39,31 @@ const MapContainer = ({
   startLocation
 }) => {
   const [activeFilters, setActiveFilters] = useState([]);
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // 메뉴 열림 기능 추가
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLocationButtonActive, setIsLocationButtonActive] = useState(false);
+  const mapServiceRef = useRef(null);
 
-  const toggleMenu = () => setIsMenuOpen(prev => !prev); // 
+  const toggleMenu = () => setIsMenuOpen(prev => !prev);
 
   const handleFilterClick = (filterText) => {
-    console.log('Filter clicked:', filterText);
-    setActiveFilters(prev => {
-      const newFilters = prev.includes(filterText)
+    setActiveFilters(prev =>
+      prev.includes(filterText)
         ? prev.filter(f => f !== filterText)
-        : [...prev, filterText];
-      return newFilters;
-    });
+        : [...prev, filterText]
+    );
+  };
+
+  const handleMoveToCurrent = () => {
+    setIsLocationButtonActive(true);
+    if (mapServiceRef.current?.moveToCurrentLocation) {
+      mapServiceRef.current.moveToCurrentLocation();
+    }
+    setTimeout(() => setIsLocationButtonActive(false), 3000);
   };
 
   return (
     <div className="map-container" style={{ overflow: 'hidden' }}>
-      {/* 상단바, 검색바, 필터 버튼 등 */}
+      {/* 상단 바 */}
       <div style={{
         position: 'absolute',
         top: 0,
@@ -71,32 +78,24 @@ const MapContainer = ({
         background: 'transparent',
         pointerEvents: 'auto'
       }}>
-
-        {/* 검색바 */}
         <div className="search-bar" style={{
           width: '90%',
-          maxWidth: 'calc(100% - 32px)',  // 양쪽 여백 16px씩
-          margin: '0 auto'  // 중앙 정렬
+          maxWidth: 'calc(100% - 32px)',
+          margin: '0 auto'
         }}>
-          
-          {/* ≡ 메뉴 버튼으로 변경 */}
           <button 
             className="menu-button"
-            style={{
-              cursor: 'pointer'
-            }}
+            style={{ cursor: 'pointer' }}
             onClick={(e) => {
               e.stopPropagation();
-              toggleMenu(); // 메뉴 열고 닫기
+              toggleMenu();
             }}
           >
             ≡
           </button>
 
-
-          {/* 검색 입력창 */}
           <div 
-            onClick={() => onEditDestination()} // 도착지 검색 열기
+            onClick={() => onEditDestination()}
             style={{
               flex: 1,
               cursor: 'pointer',
@@ -121,7 +120,7 @@ const MapContainer = ({
             />
           </div>
         </div>
-        
+
         {/* 필터 버튼 */}
         <div className="filter-buttons-container">
           <div className="filter-buttons-scroll">
@@ -135,11 +134,7 @@ const MapContainer = ({
                   src={button.icon} 
                   alt={button.text}
                   className="filter-button-icon"
-                  style={{
-                    width: '20px',
-                    height: '20px',
-                    objectFit: 'contain'
-                  }}
+                  style={{ width: '20px', height: '20px', objectFit: 'contain' }}
                 />
                 <span className="filter-button-text">{button.text}</span>
               </button>
@@ -148,7 +143,7 @@ const MapContainer = ({
         </div>
       </div>
 
-      {/* 실제 지도 렌더 */}
+      {/* 지도 컴포넌트 */}
       <div className="map-component-container">
         <NaverMap
           selectedMode={selectedMode}
@@ -157,12 +152,20 @@ const MapContainer = ({
           onFilterClick={handleFilterClick}
           onCurrentLocationUpdate={onCurrentLocationUpdate}
           startLocation={startLocation}
+          mapServiceRef={mapServiceRef}
         />
       </div>
 
-      {/* 메뉴 패널 삽입 */}
-      <MenuPanel isOpen={isMenuOpen} onClose={toggleMenu} />
+      {/* 현재 위치 버튼 */}
+      <button
+        className={`move-to-current-button ${isLocationButtonActive ? 'active' : ''}`}
+        onClick={handleMoveToCurrent}
+      >
+        <img src="/images/RouteSelectionScreen/location.svg" alt="현재 위치로 이동" />
+      </button>
 
+      {/* 메뉴 패널 */}
+      <MenuPanel isOpen={isMenuOpen} onClose={toggleMenu} />
     </div>
   );
 };
