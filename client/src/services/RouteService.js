@@ -166,16 +166,16 @@ class RouteService {
         // 모든 경로 유형에 대해 동일한 색상 사용 (지도에서 잘 보이는 색상)
         const routeColor = {
           border: '#FFFFFF',     // 테두리 색상 (흰색)
-          main: '#FF5757'        // 메인 경로 색상 (선명한 빨간색 계열)
+          main: '#4B89DC'        // 메인 경로 색상 (네이버 지도 스타일 파란색)
         };
  
-        // 경로에 테두리 주기 - 더 두껍고 반투명하게 설정
+        // 경로에 테두리 주기 - 더 두껍고 불투명하게 설정
         this.pathBorderInstance = new naver.maps.Polyline({
           map: this.mapInstance,
           path: path,
           strokeColor: routeColor.border,
-          strokeWeight: 8,         // 테두리를 더 두껍게
-          strokeOpacity: 0.7,      // 약간 투명하게
+          strokeWeight: 12,       // 테두리를 더 두껍게
+          strokeOpacity: 1,       // 완전 불투명하게
           strokeLineCap: 'round',
           strokeLineJoin: 'round',
           zIndex: 1
@@ -186,8 +186,8 @@ class RouteService {
           map: this.mapInstance,
           path: path,
           strokeColor: routeColor.main,
-          strokeWeight: 5,         // 약간 더 두껍게
-          strokeOpacity: 0.9,      // 더 불투명하게
+          strokeWeight: 6,        // 약간 더 두껍게
+          strokeOpacity: 1,       // 완전 불투명하게
           strokeLineCap: 'round',
           strokeLineJoin: 'round',
           zIndex: 2
