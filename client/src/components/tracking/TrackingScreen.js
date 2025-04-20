@@ -213,17 +213,29 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
      <div className="tracking-screen">
        {/* 상단 바: 목적지 정보 및 뒤로 가기 */}
        <div className="tracking-header">
-         <button className="tracking-back-button" onClick={handleBackClick}>
-           <img src="/images/RouteSelectionScreen/back.png" alt="뒤로 가기" />
-         </button>
-         <div className="destination-info">
-           <h3>{destination?.name || '목적지'}</h3>
-           <div className="destination-details">
-             <p>{formatDistance(remainingDistance)} 남음</p>
-             <p>도착 {formatTime(estimatedTime)}</p>
+         <div className="header-content">
+           <button className="tracking-back-button" onClick={handleBackClick}>
+             <img src="/images/RouteSelectionScreen/back.png" alt="뒤로 가기" />
+           </button>
+           <div className="destination-info">
+             <h3>{destination?.name || '목적지'}</h3>
+             <div className="destination-details">
+               <div className="detail-item">
+                 <svg className="detail-icon" viewBox="0 0 24 24">
+                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="currentColor"/>
+                 </svg>
+                 <span>{formatDistance(remainingDistance)} 남음</span>
+               </div>
+               <div className="detail-item">
+                 <svg className="detail-icon" viewBox="0 0 24 24">
+                   <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm.5 5v5.25l4.5 2.67-.75 1.23L11 13V7h1.5z" fill="currentColor"/>
+                 </svg>
+                 <span>도착 {formatTime(estimatedTime)}</span>
+               </div>
+             </div>
            </div>
+           <div className="header-right-space"></div>
          </div>
-         <div className="header-right-space"></div>
        </div>
        
        {/* 지도 영역 */}
