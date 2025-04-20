@@ -11,13 +11,13 @@
 
 /* 펼치기 토글 버튼 */
 .setting-toggle-button {
-  width: 25px;
-  height: 25px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background-color: white;
   color: white;
   font-size: 24px;
-  border: none;
+  border: 1px solid gray;
   cursor: pointer;
   display: flex;
   align-items: center;
