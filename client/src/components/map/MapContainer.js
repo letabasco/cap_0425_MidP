@@ -9,6 +9,7 @@ const filterButtons = {
     { icon: '/images/map/category/store.png', text: '편의점' },
     { icon: '/images/map/category/oneonenine.png', text: '소방시설' },
     { icon: '/images/map/category/police.png', text: '경찰서' },
+    { icon: '/images/map/category/siren.png', text: '외국인 주의구역' },
   ],
   '여성': [
     { icon: '/images/map/category/siren.png', text: '안전비상벨' },
@@ -16,6 +17,7 @@ const filterButtons = {
     { icon: '/images/map/category/store.png', text: '편의점' },
     { icon: '/images/map/category/oneonenine.png', text: '소방시설' },
     { icon: '/images/map/category/police.png', text: '경찰서' },
+    { icon: '/images/map/category/siren.png', text: '외국인 주의구역' },
   ],
   '노약자': [
     { icon: '/images/map/category/ele.png', text: '지하철역 엘리베이터' },
@@ -25,6 +27,7 @@ const filterButtons = {
     { icon: '/images/map/category/store.png', text: '편의점' },
     { icon: '/images/map/category/oneonenine.png', text: '소방시설' },
     { icon: '/images/map/category/police.png', text: '경찰서' },
+    { icon: '/images/map/category/siren.png', text: '외국인 주의구역' },
   ],
 };
 
